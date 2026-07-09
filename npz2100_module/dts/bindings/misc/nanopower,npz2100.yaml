@@ -1,0 +1,53 @@
+# Copyright (c) Nanopower Semiconductor AS
+# SPDX-License-Identifier: Apache-2.0
+#
+# nanopower,npz2100.yaml
+# -----------------------
+# Devicetree binding for the Nanopower Semiconductor nPZ2100 power-saving IC.
+#
+# Power architecture:
+#   The nPZ2100 controls the nRF52833 power supply via its SW_HP host switch.
+#   When idle, it cuts power to the nRF52833 completely.  There is no
+#   always-on interrupt line — every nRF52833 boot is caused by the nPZ2100
+#   re-asserting SW_HP in response to a configured trigger.
+#
+# Minimal overlay:
+#
+#   &i2c0 {
+#       status = "okay";
+#       clock-frequency = <I2C_BITRATE_STANDARD>;
+#       npz2100: npz2100@6f {
+#           compatible = "nanopower,npz2100";
+#           reg = <0x6f>;
+#           label = "NPZ2100";
+#       };
+#   };
+
+description: |
+  Nanopower Semiconductor nPZ2100 ultra-low-power autonomous sensor
+  management IC.
+
+  Controls up to 6 I²C/SPI sensors autonomously and manages the host MCU
+  power supply.  The nRF52833 is powered off completely while the nPZ2100
+  is in idle mode; every boot is a wake event triggered by the nPZ2100.
+
+  Supply voltage: 1.7 V – 3.6 V
+  Idle current:   200 nA
+  I²C frequency:  100 kHz (both slave and master roles)
+
+compatible: "nanopower,npz2100"
+
+include: [i2c-device.yaml]
+
+properties:
+
+  reg:
+    required: true
+    description: |
+      7-bit I²C address of the nPZ2100.
+      Factory default: 0x6F.
+      Adjust if hardware strapping selects a different address.
+
+  label:
+    required: false
+    description: Human-readable device label for logging and shell output.

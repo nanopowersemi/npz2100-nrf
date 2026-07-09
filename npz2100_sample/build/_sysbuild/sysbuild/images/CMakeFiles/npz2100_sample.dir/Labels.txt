@@ -1,0 +1,13 @@
+# Target labels
+ npz2100_sample
+# Source files and their labels
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/CMakeFiles/npz2100_sample
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/CMakeFiles/npz2100_sample.rule
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/CMakeFiles/npz2100_sample-complete.rule
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-build.rule
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-configure.rule
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-download.rule
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-install.rule
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-mkdir.rule
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-patch.rule
+C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-update.rule

@@ -1,0 +1,50 @@
+# Copyright (c) Nanopower Semiconductor AS
+# SPDX-License-Identifier: Apache-2.0
+#
+# Kconfig  (drivers/npz2100)
+# ---------------------------
+# Configuration symbols for the nPZ2100 power-saving IC driver.
+#
+# Power architecture
+# ------------------
+# The nPZ2100 controls the nRF52833 host power switch (SW_HP).  When the
+# nPZ2100 enters idle mode it cuts power to the nRF52833 completely — there
+# is no always-on interrupt line.  Every nRF52833 boot is a fresh start
+# caused by the nPZ2100 re-asserting SW_HP.
+#
+# On each boot the driver must:
+#   1. Read STA1–STA3 immediately to learn the wake-up reason.
+#   2. Read back all nPZ2100 registers to sync the shadow.
+#   3. Diff the desired regmap against the shadow; write only what changed.
+#   4. Re-enter idle when done — nPZ2100 cuts power again.
+
+config NPZ2100
+	bool "Nanopower Semiconductor nPZ2100 power-saving IC driver"
+	default y
+	depends on DT_HAS_NANOPOWER_NPZ2100_ENABLED
+	depends on I2C
+	help
+	  Enable the nPZ2100 power-saving IC driver.
+
+	  The nPZ2100 autonomously manages up to 6 sensors over I²C/SPI and
+	  controls the nRF52833 host power switch.  When idle, the nPZ2100
+	  cuts power to the nRF52833 entirely.  On each nRF52833 boot the
+	  driver reads the wake-up reason from STA1–STA3, syncs its register
+	  shadow from the device, applies any changed configuration, and
+	  re-enters idle when the application is done.
+
+if NPZ2100
+
+config NPZ2100_INIT_PRIORITY
+	int "nPZ2100 driver initialisation priority"
+	default 80
+	help
+	  Zephyr device initialisation priority.  Must be higher (numerically)
+	  than the I²C controller priority (typically 50–70) so the bus is
+	  ready before the nPZ2100 driver runs.
+
+module = NPZ2100
+module-str = nPZ2100
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # NPZ2100

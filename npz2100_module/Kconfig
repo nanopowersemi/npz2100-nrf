@@ -1,0 +1,10 @@
+# Copyright (c) Nanopower Semiconductor AS
+# SPDX-License-Identifier: Apache-2.0
+#
+# Kconfig  (module root)
+# -----------------------
+# Top-level Kconfig for the npz2100 Zephyr module.
+# Zephyr's module infrastructure sources this file automatically when the
+# module is registered in west.yml.
+
+rsource "drivers/npz2100/Kconfig"

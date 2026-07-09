@@ -1,0 +1,24 @@
+# Copyright (c) Nanopower Semiconductor AS
+# SPDX-License-Identifier: Apache-2.0
+#
+# zephyr/module.yml
+# -----------------
+# Declares this repository as a Zephyr module for NCS 3.0.2 / Zephyr ~3.7.
+#
+# West discovers this file automatically when the module is listed in the
+# workspace west.yml (see docs/zephyr-integration.mdx).  The build system
+# then:
+#   - Adds  drivers/npz2100/  to the CMake source tree (via CMakeLists.txt).
+#   - Adds  dts/bindings/      to the devicetree binding search path.
+#   - Adds  include/           to the compiler include search path.
+#   - Adds  Kconfig             to the top-level Kconfig source chain.
+
+name: npz2100
+
+build:
+  cmake: .            # Module root contains the top-level CMakeLists.txt.
+  kconfig: Kconfig    # Module root contains the top-level Kconfig.
+
+  # Additional source roots exposed to the build system.
+  settings:
+    dts_root: .       # dts/bindings/ beneath this root is searched for .yaml.

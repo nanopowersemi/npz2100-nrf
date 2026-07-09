@@ -1,0 +1,45 @@
+/*
+ * Copyright (c) Nanopower Semiconductor AS
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * boards/nrf52833dk_nrf52833.overlay
+ * ------------------------------------
+ * Devicetree overlay — nPZ2100 on nRF52833 Development Kit (PCA10100).
+ *
+ * Power architecture
+ * ------------------
+ * The nPZ2100 controls the nRF52833 host power supply via SW_HP.
+ * When idle, the nPZ2100 cuts power to the nRF52833 completely.
+ * There is NO interrupt line from nPZ2100 to nRF52833 in this design.
+ * Every nRF52833 boot is caused by the nPZ2100 re-enabling SW_HP.
+ *
+ * Hardware connections (adjust pins to match your PCB schematic):
+ *   nPZ2100 SDA  →  P0.26  (default nRF52833DK I²C0 SDA)
+ *   nPZ2100 SCL  →  P0.27  (default nRF52833DK I²C0 SCL)
+ *   nPZ2100 VBAT →  3.0 V supply rail
+ *   nPZ2100 VSS  →  GND
+ *
+ *   Required bypass capacitors (place close to nPZ2100):
+ *     100 nF C0G on VBAT
+ *     10 nF  C0G on VDD1V2
+ *     10 nF  C0G on VDDD
+ *
+ * I²C is fixed at 100 kHz to match the nPZ2100 specification.
+ * The nPZ2100 factory I²C address is 0x6F.
+ */
+
+&i2c0 {
+	status = "okay";
+
+	/*
+	 * 100 kHz — nPZ2100 maximum rated I²C frequency.
+	 * The nRF52833 TWIM peripheral maps I2C_BITRATE_STANDARD to 100 kHz.
+	 */
+	clock-frequency = <I2C_BITRATE_STANDARD>;
+
+	npz2100: npz2100@6f {
+		compatible = "nanopower,npz2100";
+		reg = <0x6f>;        /* 7-bit I²C address — adjust if strapped differently */
+		label = "NPZ2100";
+	};
+};
