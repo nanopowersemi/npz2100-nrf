@@ -39,11 +39,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/zephyr/arch/common/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/zephyr/arch/common/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/zephyr/arch/arch/arm/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/zephyr/arch/arch/arm/cmake_install.cmake")
 endif()
 

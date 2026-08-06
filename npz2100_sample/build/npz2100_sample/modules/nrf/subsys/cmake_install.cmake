@@ -39,46 +39,46 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/net/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/net/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/dfu/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/dfu/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/mpsl/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/mpsl/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/logging/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/logging/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/shell/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/shell/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/debug/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/debug/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/partition_manager/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/partition_manager/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/suit/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/suit/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/mgmt/mcumgr/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/nrf/subsys/mgmt/mcumgr/cmake_install.cmake")
 endif()
 

@@ -1,7 +1,7 @@
 cmake:
   application:
-    configuration-dir: C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample
-    source-dir: C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample
+    configuration-dir: C:/work/git/nanopower/npz2100-nrf/npz2100_sample
+    source-dir: C:/work/git/nanopower/npz2100-nrf/npz2100_sample
   board:
     name: nrf52833dk
     path:
@@ -11,19 +11,19 @@ cmake:
   devicetree:
     bindings-dirs:
      - C:/work/ncs/v3.0.2/nrf/dts/bindings
-     - C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_module/dts/bindings
+     - C:/work/git/nanopower/npz2100-nrf/npz2100_module/dts/bindings
      - C:/work/ncs/v3.0.2/zephyr/dts/bindings
     files:
      - C:/work/ncs/v3.0.2/zephyr/boards/nordic/nrf52833dk/nrf52833dk_nrf52833.dts
-     - C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/boards/nrf52833dk_nrf52833.overlay
+     - C:/work/git/nanopower/npz2100-nrf/npz2100_sample/boards/nrf52833dk_nrf52833.overlay
     include-dirs:
      - C:/work/ncs/v3.0.2/nrf/include
      - C:/work/ncs/v3.0.2/nrf/dts/common
      - C:/work/ncs/v3.0.2/nrf/dts/riscv
      - C:/work/ncs/v3.0.2/nrf/dts/arm
      - C:/work/ncs/v3.0.2/nrf/dts
-     - C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_module/include
-     - C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_module/dts
+     - C:/work/git/nanopower/npz2100-nrf/npz2100_module/include
+     - C:/work/git/nanopower/npz2100-nrf/npz2100_module/dts
      - C:/work/ncs/v3.0.2/zephyr/include
      - C:/work/ncs/v3.0.2/zephyr/include/zephyr
      - C:/work/ncs/v3.0.2/zephyr/dts/common
@@ -38,15 +38,15 @@ cmake:
      - C:/work/ncs/v3.0.2/zephyr/dts/arc
      - C:/work/ncs/v3.0.2/zephyr/dts
     user-files:
-     - C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/boards/nrf52833dk_nrf52833.overlay
+     - C:/work/git/nanopower/npz2100-nrf/npz2100_sample/boards/nrf52833dk_nrf52833.overlay
   kconfig:
     files:
      - C:/work/ncs/v3.0.2/zephyr/boards/nordic/nrf52833dk/nrf52833dk_nrf52833_defconfig
-     - C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/prj.conf
-     - C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/zephyr/misc/generated/extra_kconfig_options.conf
-     - C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/zephyr/.config.sysbuild
+     - C:/work/git/nanopower/npz2100-nrf/npz2100_sample/prj.conf
+     - C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/zephyr/misc/generated/extra_kconfig_options.conf
+     - C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/zephyr/.config.sysbuild
     user-files:
-     - C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/prj.conf
+     - C:/work/git/nanopower/npz2100-nrf/npz2100_sample/prj.conf
   toolchain:
     name: zephyr
     path: C:/ncs/toolchains/b8b84efebd/opt/zephyr-sdk

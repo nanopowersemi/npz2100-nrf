@@ -2,34 +2,34 @@
 	"sources" : 
 	[
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/CMakeFiles/npz2100_sample"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/CMakeFiles/npz2100_sample"
 		},
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/CMakeFiles/npz2100_sample.rule"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/CMakeFiles/npz2100_sample.rule"
 		},
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/CMakeFiles/npz2100_sample-complete.rule"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/CMakeFiles/npz2100_sample-complete.rule"
 		},
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-build.rule"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-build.rule"
 		},
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-configure.rule"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-configure.rule"
 		},
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-download.rule"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-download.rule"
 		},
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-install.rule"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-install.rule"
 		},
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-mkdir.rule"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-mkdir.rule"
 		},
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-patch.rule"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-patch.rule"
 		},
 		{
-			"file" : "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-update.rule"
+			"file" : "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/_sysbuild/sysbuild/images/npz2100_sample-prefix/src/npz2100_sample-stamp/npz2100_sample-update.rule"
 		}
 	],
 	"target" : 

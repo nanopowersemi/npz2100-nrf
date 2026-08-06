@@ -154,7 +154,7 @@ static void handle_peripheral_wake(int slot)
  * ---------------------------------------------------------------------- */
 static void handle_battery_low(void)
 {
-	LOG_WRN("Battery low — increasing polling period to conserve energy");
+	LOG_WRN("Battery low - increasing polling period to conserve energy");
 
 	/*
 	 * Use the typed helper to modify peripheral 1's polling period
@@ -206,7 +206,7 @@ int main(void)
 		 * idle safely.  Loop here so the watchdog fires and the
 		 * nPZ2100 power-cycles the nRF52833.
 		 */
-		LOG_ERR("nPZ2100 device not ready — waiting for watchdog");
+		LOG_ERR("nPZ2100 device not ready - waiting for watchdog");
 		while (true) {
 			k_msleep(1000);
 		}
@@ -218,7 +218,7 @@ int main(void)
 	/* ------------------------------------------------------------------ */
 	ret = npz2100_boot_status(npz2100, &reason);
 	if (ret != 0) {
-		LOG_ERR("boot_status failed: %d — cannot determine wake reason", ret);
+		LOG_ERR("boot_status failed: %d - cannot determine wake reason", ret);
 		/* Fall through: still try to re-enter idle. */
 	}
 
@@ -253,7 +253,7 @@ int main(void)
 	/*    whether SRAM needs re-initialising (only on cold/POR boot).      */
 	/* ------------------------------------------------------------------ */
 	if (reason.rst_src == NPZ2100_RST_SRC_POR) {
-		LOG_INF("Power-on reset detected — writing SRAM init commands");
+		LOG_INF("Power-on reset detected - writing SRAM init commands");
 		ret = npz2100_sram_write(npz2100, 0x00u,
 					 sensor_init_cmds,
 					 sizeof(sensor_init_cmds));
@@ -280,7 +280,7 @@ int main(void)
 
 	if (reason.timeout) {
 		/* Periodic time-out: no action needed beyond re-entering idle. */
-		LOG_INF("Periodic time-out wake — nothing to process");
+		LOG_INF("Periodic time-out wake - nothing to process");
 	}
 
 	if (reason.alarm) {
@@ -303,7 +303,7 @@ int main(void)
 	/* 7. Re-enter idle.  nPZ2100 will cut nRF52833 power.                */
 	/*    This is the last instruction that executes.                      */
 	/* ------------------------------------------------------------------ */
-	LOG_INF("Returning to idle — nRF52833 power will be cut");
+	LOG_INF("Returning to idle - nRF52833 power will be cut");
 
 	ret = npz2100_enter_idle(npz2100);
 
@@ -311,7 +311,7 @@ int main(void)
 	 * Reaching here means the I²C write to IDLE_RST failed.
 	 * The nPZ2100 watchdog will power-cycle the system after its timeout.
 	 */
-	LOG_ERR("enter_idle failed: %d — waiting for watchdog", ret);
+	LOG_ERR("enter_idle failed: %d - waiting for watchdog", ret);
 	while (true) {
 		k_msleep(1000);
 	}

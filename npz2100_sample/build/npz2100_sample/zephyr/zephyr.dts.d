@@ -28,4 +28,4 @@ empty_file.o: C:/work/ncs/v3.0.2/zephyr/misc/empty_file.c \
  C:/work/ncs/v3.0.2/zephyr/include/zephyr/dt-bindings/adc/nrf-saadc.h \
  C:/work/ncs/v3.0.2/zephyr/include/zephyr/dt-bindings/regulator/nrf5x.h \
  C:/work/ncs/v3.0.2/zephyr/boards/nordic/nrf52833dk/nrf52833dk_nrf52833-pinctrl.dtsi \
- C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/boards/nrf52833dk_nrf52833.overlay
+ C:/work/git/nanopower/npz2100-nrf/npz2100_sample/boards/nrf52833dk_nrf52833.overlay

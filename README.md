@@ -1,6 +1,6 @@
 # nPZ2100 — nRF Connect SDK Driver Package
 
-**Target:** nRF52833 · **SDK:** NCS 3.0.2 · **IDE:** VS Code + nRF Connect extension
+**Target:** nRF Host Chip · **SDK:** NCS 3.0.2 · **IDE:** VS Code + nRF Connect extension
 
 ---
 
@@ -34,7 +34,7 @@ npz2100_ncs/
     ├── CMakeLists.txt
     ├── prj.conf
     ├── boards/
-    │   └── nrf52833dk_nrf52833.overlay
+    │   └── <your_board>.overlay ← Rename/replace for your target board
     └── src/
         └── main.c
 ```
@@ -48,7 +48,7 @@ npz2100_ncs/
 | VS Code | Any recent | https://code.visualstudio.com |
 | nRF Connect for VS Code extension pack | Latest | VS Code Extensions Marketplace |
 | nRF Connect SDK | **3.0.2** | Installed via nRF Connect for VS Code |
-| nRF52833 DK | PCA10100 | https://www.nordicsemi.com |
+| nRF Host Chip DK or custom board | Any NCS-supported nRF Host Chip | https://www.nordicsemi.com |
 
 Install the nRF Connect SDK through the **nRF Connect for VS Code** extension:
 `View → Extensions → nRF Connect for VS Code → Install SDK 3.0.2`
@@ -86,26 +86,30 @@ VS Code will detect the nRF Connect application structure automatically.
 In the **nRF Connect** sidebar panel:
 
 1. Click **+ Add Build Configuration**
-2. Board: `nrf52833dk/nrf52833`
+2. Board: select your target (e.g. `nrf52833dk/nrf52833`, `nrf5340dk/nrf5340/cpuapp`, `nrf9160dk/nrf9160`)
 3. SDK: `3.0.2`
 4. Leave all other settings at default
 5. Click **Build Configuration**
 
 The `CMakeLists.txt` in `npz2100_sample/` registers `npz2100_module/` automatically via `ZEPHYR_EXTRA_MODULES` — no additional setup is required.
 
+> **Board overlay:** The sample includes a reference overlay for the nRF52833 DK.
+> Rename or replace it with an overlay matching your target board.
+> See **Adapting the sample** below for instructions.
+
 ---
 
 ### Step 4 — Connect your hardware
 
-Wire the nPZ2100 to the nRF52833 DK:
+Wire the nPZ2100 to your nRF Host Chip:
 
-| nPZ2100 pin | nRF52833 DK pin | Notes |
-|-------------|-----------------|-------|
-| SDA | P0.26 | Default I²C0 SDA on DK |
-| SCL | P0.27 | Default I²C0 SCL on DK |
-| VBAT | VDD (3.0 V) | DK 3V3 or external supply |
+| nPZ2100 pin | nRF Host Chip pin | Notes |
+|-------------|---------------|-------|
+| SDA | I²C SDA pin of your nRF Host Chip | Check your board's default I²C0 SDA |
+| SCL | I²C SCL pin of your nRF Host Chip | Check your board's default I²C0 SCL |
+| VBAT | VDD (3.0 V) | Device VDD or external supply |
 | VSS | GND | |
-| SW_HP | nRF52833 VDD | **Power control line — see below** |
+| SW_HP | nRF Host Chip VDD | **Power control line — see below** |
 
 **Required bypass capacitors** (place as close to the nPZ2100 as possible):
 
@@ -115,16 +119,16 @@ Wire the nPZ2100 to the nRF52833 DK:
 | C2 | 10 nF C0G | VDD1V2 |
 | C3 | 10 nF C0G | VDDD |
 
-**SW_HP → nRF52833 VDD:**
-The nPZ2100's SW_HP pin controls the nRF52833 power supply. When the nPZ2100
-enters idle mode it de-asserts SW_HP, cutting power to the nRF52833 completely.
-On the DK, SW_HP should feed the nRF52833 VDD rail through an appropriate
-P-channel MOSFET or power switch IC rated for the DK's current requirements.
+**SW_HP → nRF Host Chip VDD:**
+The nPZ2100's SW_HP pin controls the nRF Host Chip power supply. When the nPZ2100
+enters idle mode it de-asserts SW_HP, cutting power to the nRF Host Chip completely.
+SW_HP should feed the nRF Host Chip VDD rail through an appropriate P-channel MOSFET
+or power switch IC rated for the chip's current requirements.
 
-> **For initial evaluation on the DK**, you can leave SW_HP disconnected and
-> power the nRF52833 from the DK's USB. The driver will still initialise,
+> **For initial evaluation on a DK**, you can leave SW_HP disconnected and
+> power the nRF Host Chip from the DK's USB. The driver will still initialise,
 > communicate with the nPZ2100, and `npz2100_enter_idle()` will write the
-> idle command — but the nRF52833 will remain powered since SW_HP is not
+> idle command — but the nRF Host Chip will remain powered since SW_HP is not
 > connected to its supply. This is sufficient to test I²C communication,
 > register configuration, and wake-reason decoding.
 
@@ -144,10 +148,10 @@ Expected first-boot output:
 [00:00:00.008] <inf> npz2100: nPZ2100 ready on i2c@40003000 @ 0x6f
 [00:00:00.012] <inf> app: --- nPZ2100 sample boot ---
 [00:00:00.015] <inf> npz2100: boot_status: STA1=0x00 STA2=0x00 STA3=0x00
-[00:00:00.019] <inf> app: Power-on reset detected — writing SRAM init commands
+[00:00:00.016] <inf> npz2100:   reset_src: Power-on reset (0x00)
 [00:00:00.031] <inf> npz2100: apply_regmap: 18 register(s) written
-[00:00:00.034] <inf> app: Returning to idle — nRF52833 power will be cut
-[00:00:00.036] <inf> npz2100: Entering idle — nRF52833 power will be cut
+[00:00:00.034] <inf> app: Returning to idle — nRF Host Chip power will be cut
+[00:00:00.036] <inf> npz2100: Entering idle — nRF Host Chip power will be cut
 ```
 
 If you see `nPZ2100 not found`, check your SDA/SCL wiring and verify the
@@ -157,30 +161,39 @@ I²C address matches the `reg = <0x6f>` in the overlay.
 
 ## Adapting the sample for your application
 
-### Replace the register map
+### Create a board overlay for your target
 
-The `npz2100_regmap[]` array in `src/main.c` is a placeholder. Replace it
-with the output of the **Nanopower configuration tool**.
+The sample ships with a reference overlay for the nRF52833 DK. To target a
+different board, create a new file in `boards/` named after your board target:
 
-The format is a flat byte stream of segments:
 ```
-[length] [start_addr] [data_0] ... [data_(length-2)]
+boards/
+└── <board_target>.overlay
 ```
-where `length = 1 (start_addr) + N (data bytes)`.
 
-### Change the I²C address
+where `<board_target>` matches the board string used in the build configuration
+(e.g. `nrf5340dk_nrf5340_cpuapp`, `nrf9160dk_nrf9160`, `your_custom_board`).
 
-Edit `boards/nrf52833dk_nrf52833.overlay`:
+Minimal overlay content — adjust the I²C controller (`&i2c0`, `&i2c1`, etc.)
+and I²C address to match your hardware:
+
 ```dts
-npz2100: npz2100@XX {
-    reg = <0xXX>;   /* your hardware-strapped address */
+&i2c0 {
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_STANDARD>;   /* 100 kHz */
+
+    npz2100: npz2100@6f {
+        compatible = "nanopower,npz2100";
+        reg = <0x6f>;
+        label = "NPZ2100";
+    };
 };
 ```
 
-### Change the I²C pins
+### Set I²C pins for your board
 
-The default overlay uses P0.26/P0.27 (nRF52833 DK defaults).
-If your board uses different pins, add pinctrl configuration:
+If your board's I²C pins are not already assigned in its board definition,
+add a `pinctrl` block to your overlay:
 
 ```dts
 &pinctrl {
@@ -206,7 +219,18 @@ If your board uses different pins, add pinctrl configuration:
 };
 ```
 
-### Handle additional wake reasons
+### Replace the register map
+
+The `npz2100_regmap[]` array in `src/main.c` is a placeholder. Replace it
+with the output of the **Nanopower configuration tool**.
+
+The format is a flat byte stream of segments:
+```
+[length] [start_addr] [data_0] ... [data_(length-2)]
+```
+where `length = 1 (start_addr) + N (data bytes)`.
+
+### Handle wake reasons
 
 Add cases to `main.c` in the wake-reason handler section:
 
@@ -237,7 +261,7 @@ npz2100_enter_idle(npz2100);
 
 ## Adding the module to your own application
 
-### Option A — ZEPHYR_EXTRA_MODULES (copy-paste, no west.yml change)
+### Option A — ZEPHYR_EXTRA_MODULES (no west.yml change)
 
 Copy `npz2100_module/` next to your application and add to your
 `CMakeLists.txt` before `find_package(Zephyr ...)`:
@@ -269,11 +293,12 @@ Then remove the `ZEPHYR_EXTRA_MODULES` line from `CMakeLists.txt`.
 | Symptom | Likely cause | Fix |
 |---------|-------------|-----|
 | `nPZ2100 not found on i2c@... @ 0x6f` | Wrong I²C address or wiring | Check SDA/SCL, verify address with a logic analyser |
-| `I2C bus ... not ready` | I²C controller not enabled in DT | Add `status = "okay"` to `&i2c0` in overlay |
+| `I2C bus ... not ready` | I²C controller not enabled in DT | Add `status = "okay"` to your I²C node in the overlay |
 | Build error: `unknown vendor prefix 'nanopower'` | DT binding not found | Verify `npz2100_module/` path in `CMakeLists.txt` |
 | Build error: `DT_HAS_NANOPOWER_NPZ2100_ENABLED` undefined | DT node missing or wrong compatible | Check overlay `compatible = "nanopower,npz2100"` |
-| `apply_regmap: malformed byte stream` | Wrong `length` in regmap | Run `npz2100_map_validate()`, check tool output |
-| nRF52833 keeps rebooting immediately | SW_HP wired incorrectly | Verify SW_HP polarity and MOSFET circuit |
+| `apply_regmap: malformed byte stream` | Wrong `length` in regmap | Check segment framing: `length = 1 (start_addr) + N (data bytes)` |
+| nRF Host Chip keeps rebooting immediately | SW_HP wired incorrectly | Verify SW_HP polarity and MOSFET circuit |
+| Overlay not picked up | Wrong overlay filename | Filename must match board target string exactly |
 
 ---
 
@@ -282,7 +307,7 @@ Then remove the `ZEPHYR_EXTRA_MODULES` line from `CMakeLists.txt`.
 ```c
 #include <drivers/npz2100.h>
 
-/* Boot sequence — call in this order on every nRF52833 boot */
+/* Boot sequence — call in this order on every boot */
 int npz2100_boot_status(dev, &reason);   // read wake reason + kick watchdog
 int npz2100_readback(dev);               // sync shadow from device
 int npz2100_apply_regmap(dev, map, len); // write only changed registers

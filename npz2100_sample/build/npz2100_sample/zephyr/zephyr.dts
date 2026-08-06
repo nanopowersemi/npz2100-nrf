@@ -156,9 +156,9 @@
 			pinctrl-1 = < &i2c0_sleep >;
 			pinctrl-names = "default", "sleep";
 			clock-frequency = < 0x186a0 >;
-			npz2100: npz2100@6f {
+			npz2100: npz2100@3C {
 				compatible = "nanopower,npz2100";
-				reg = < 0x6f >;
+				reg = < 0x3c >;
 				label = "NPZ2100";
 			};
 		};
@@ -545,7 +545,7 @@
 		uart0_default: uart0_default {
 			phandle = < 0x2 >;
 			group1 {
-				psels = < 0x6 >, < 0x2000005 >;
+				psels = < 0x6 >;
 			};
 			group2 {
 				psels = < 0x1000008 >, < 0x3000007 >;
@@ -555,7 +555,7 @@
 		uart0_sleep: uart0_sleep {
 			phandle = < 0x3 >;
 			group1 {
-				psels = < 0x6 >, < 0x1000008 >, < 0x2000005 >, < 0x3000007 >;
+				psels = < 0x6 >;
 				low-power-enable;
 			};
 		};

@@ -41,7 +41,7 @@
 "tinycrypt":"C:/work/ncs/v3.0.2/modules/crypto/tinycrypt":"C:/work/ncs/v3.0.2/modules/crypto/tinycrypt"
 "uoscore-uedhoc":"C:/work/ncs/v3.0.2/modules/lib/uoscore-uedhoc":"${ZEPHYR_UOSCORE_UEDHOC_CMAKE_DIR}"
 "zcbor":"C:/work/ncs/v3.0.2/modules/lib/zcbor":"${ZEPHYR_ZCBOR_CMAKE_DIR}"
-"npz2100":"C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/../npz2100_module":"C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_module"
+"npz2100":"C:/work/git/nanopower/npz2100-nrf/npz2100_sample/../npz2100_module":"C:/work/git/nanopower/npz2100-nrf/npz2100_module"
 "nrfxlib":"C:/work/ncs/v3.0.2/nrfxlib":"${ZEPHYR_NRFXLIB_CMAKE_DIR}"
 "nrf_hw_models":"C:/work/ncs/v3.0.2/modules/bsim_hw_models/nrf_hw_models":"C:/work/ncs/v3.0.2/modules/bsim_hw_models/nrf_hw_models"
 "connectedhomeip":"C:/work/ncs/v3.0.2/modules/lib/matter":"C:/work/ncs/v3.0.2/modules/lib/matter/config/nrfconnect/chip-module"

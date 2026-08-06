@@ -1,8 +1,8 @@
-C:\Users\BrunoPrada\Desktop\npz2100_ncs_fixed\npz2100_sample\build\Kconfig\Kconfig.sysbuild.modules
-C:\Users\BrunoPrada\Desktop\npz2100_ncs_fixed\npz2100_sample\build\Kconfig\boards\Kconfig.nrf52833dk
-C:\Users\BrunoPrada\Desktop\npz2100_ncs_fixed\npz2100_sample\build\Kconfig\boards\Kconfig.sysbuild
-C:\Users\BrunoPrada\Desktop\npz2100_ncs_fixed\npz2100_sample\build\Kconfig\soc\Kconfig.soc
-C:\Users\BrunoPrada\Desktop\npz2100_ncs_fixed\npz2100_sample\build\Kconfig\soc\Kconfig.sysbuild
+C:\work\git\nanopower\npz2100-nrf\npz2100_sample\build\Kconfig\Kconfig.sysbuild.modules
+C:\work\git\nanopower\npz2100-nrf\npz2100_sample\build\Kconfig\boards\Kconfig.nrf52833dk
+C:\work\git\nanopower\npz2100-nrf\npz2100_sample\build\Kconfig\boards\Kconfig.sysbuild
+C:\work\git\nanopower\npz2100-nrf\npz2100_sample\build\Kconfig\soc\Kconfig.soc
+C:\work\git\nanopower\npz2100-nrf\npz2100_sample\build\Kconfig\soc\Kconfig.sysbuild
 C:\work\ncs\v3.0.2\nrf\soc\nordic\Kconfig.soc
 C:\work\ncs\v3.0.2\nrf\soc\nordic\nrf54l\Kconfig.soc
 C:\work\ncs\v3.0.2\nrf\soc\nordic\nrf71\Kconfig.soc

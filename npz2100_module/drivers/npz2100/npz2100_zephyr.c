@@ -280,18 +280,47 @@ int npz2100_boot_status(const struct device   *dev,
 		reason->nak[i] = (bool)(sta3 & BIT(i));
 	}
 
-	/* Log meaningful wake sources at INFO level. */
+	/* Log all status fields — identical output to STM32 port. */
+
+	/* Reset source — always log so every boot shows why it started. */
+	static const char * const rst_names[] = {
+		"Power-on reset", "External NRST pin",
+		"I2C command",    "Brown-out reset"
+	};
+	LOG_INF("  reset_src: %s (0x%02X)",
+		rst_names[reason->rst_src & 0x03u], reason->rst_src);
+	if (reason->srst_src != 0u) {
+		static const char * const srst_names[] = {
+			"Power-on reset", "I2C soft reset",
+			"Watchdog reset",  "Invalid"
+		};
+		LOG_INF("  soft_reset_src: %s (0x%02X)",
+			srst_names[reason->srst_src & 0x03u], reason->srst_src);
+	}
+
+	/* Peripheral threshold triggers. */
 	for (int i = 0; i < 6; i++) {
 		if (reason->periph[i]) {
 			LOG_INF("  Wake: peripheral %d triggered", i + 1);
 		}
 	}
-	if (reason->adc1)    { LOG_INF("  Wake: ADC1 threshold"); }
-	if (reason->adc2)    { LOG_INF("  Wake: ADC2 threshold"); }
-	if (reason->adc3)    { LOG_INF("  Wake: ADC3 (battery) threshold"); }
-	if (reason->timeout) { LOG_INF("  Wake: periodic time-out"); }
-	if (reason->alarm)   { LOG_INF("  Wake: time counter alarm"); }
-	if (reason->counter) { LOG_INF("  Wake: event counter"); }
+
+	/* ADC, timing, event flags. */
+	if (reason->adc1)      { LOG_INF("  Wake: ADC1 threshold"); }
+	if (reason->adc2)      { LOG_INF("  Wake: ADC2 threshold"); }
+	if (reason->adc3)      { LOG_INF("  Wake: ADC3 (battery) threshold"); }
+	if (reason->timeout)   { LOG_INF("  Wake: periodic time-out"); }
+	if (reason->alarm)     { LOG_INF("  Wake: time counter alarm"); }
+	if (reason->counter)   { LOG_INF("  Wake: event counter"); }
+	if (reason->log_full)  { LOG_INF("  Wake: SRAM log area full"); }
+	if (reason->pa_active) { LOG_INF("  Wake: power-aware mode active"); }
+
+	/* NAK flags — peripheral did not respond during autonomous polling. */
+	for (int i = 0; i < 6; i++) {
+		if (reason->nak[i]) {
+			LOG_INF("  NAK:  peripheral %d did not acknowledge I2C", i + 1);
+		}
+	}
 
 	return 0;
 }

@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_module/drivers/npz2100
+# Install script for directory: C:/work/git/nanopower/npz2100-nrf/npz2100_module/drivers/npz2100
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

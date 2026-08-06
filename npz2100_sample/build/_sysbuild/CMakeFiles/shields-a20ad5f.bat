@@ -1,5 +1,5 @@
 @echo off
-cd /D C:\Users\BrunoPrada\Desktop\npz2100_ncs_fixed\npz2100_sample\build\_sysbuild || (set FAIL_LINE=2& goto :ABORT)
+cd /D C:\work\git\nanopower\npz2100-nrf\npz2100_sample\build\_sysbuild || (set FAIL_LINE=2& goto :ABORT)
 C:\ncs\toolchains\b8b84efebd\opt\bin\cmake.exe -E echo adafruit_2_8_tft_touch_v2 || (set FAIL_LINE=3& goto :ABORT)
 C:\ncs\toolchains\b8b84efebd\opt\bin\cmake.exe -E echo adafruit_2_8_tft_touch_v2_nano || (set FAIL_LINE=4& goto :ABORT)
 C:\ncs\toolchains\b8b84efebd\opt\bin\cmake.exe -E echo adafruit_adalogger_featherwing || (set FAIL_LINE=5& goto :ABORT)

@@ -23,7 +23,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\ncs\toolchains\b8b84efebd\opt\bin\cmake.exe --regenerate-during-build -SC:\work\ncs\v3.0.2\zephyr\share\sysbuild -BC:\Users\BrunoPrada\Desktop\npz2100_ncs_fixed\npz2100_sample\build
+  command = C:\ncs\toolchains\b8b84efebd\opt\bin\cmake.exe --regenerate-during-build -SC:\work\ncs\v3.0.2\zephyr\share\sysbuild -BC:\work\git\nanopower\npz2100-nrf\npz2100_sample\build
   description = Re-running CMake...
   generator = 1
 

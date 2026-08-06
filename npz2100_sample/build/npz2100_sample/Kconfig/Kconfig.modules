@@ -241,8 +241,8 @@ config ZEPHYR_ZCBOR_MODULE
 	bool
 	default y
 endmenu
-menu "npz2100 (C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/../npz2100_module)"
-osource "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_module/Kconfig"
+menu "npz2100 (C:/work/git/nanopower/npz2100-nrf/npz2100_sample/../npz2100_module)"
+osource "C:/work/git/nanopower/npz2100-nrf/npz2100_module/Kconfig"
 config ZEPHYR_NPZ2100_MODULE
 	bool
 	default y

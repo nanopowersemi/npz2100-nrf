@@ -11,4 +11,4 @@
 "SNIPPET_ROOT":"C:/work/ncs/v3.0.2/nrf"
 "SOC_ROOT":"C:/work/ncs/v3.0.2/nrf"
 "MODULE_EXT_ROOT":"C:/work/ncs/v3.0.2/nrf"
-"DTS_ROOT":"C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/../npz2100_module"
+"DTS_ROOT":"C:/work/git/nanopower/npz2100-nrf/npz2100_sample/../npz2100_module"

@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_module
+# Install script for directory: C:/work/git/nanopower/npz2100-nrf/npz2100_module
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,6 +39,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/npz2100_sample/modules/npz2100/drivers/npz2100/cmake_install.cmake")
+  include("C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample/modules/npz2100/drivers/npz2100/cmake_install.cmake")
 endif()
 

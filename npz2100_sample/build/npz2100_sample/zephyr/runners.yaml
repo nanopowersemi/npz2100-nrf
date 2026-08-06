@@ -17,7 +17,7 @@ config:
   board_dir: C:/work/ncs/v3.0.2/zephyr/boards/nordic/nrf52833dk
   # Build outputs:
   elf_file: zephyr.elf
-  hex_file: C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/build/merged.hex
+  hex_file: C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/merged.hex
   bin_file: zephyr.bin
   # Host tools:
   gdb: C:/ncs/toolchains/b8b84efebd/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb.exe

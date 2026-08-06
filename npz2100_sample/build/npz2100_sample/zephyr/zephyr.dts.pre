@@ -1113,8 +1113,8 @@ zephyr_udc0: &usbd {
  status = "okay";
 };
 # 0 "<command-line>" 2
-# 1 "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/boards/nrf52833dk_nrf52833.overlay" 1
-# 31 "C:/Users/BrunoPrada/Desktop/npz2100_ncs_fixed/npz2100_sample/boards/nrf52833dk_nrf52833.overlay"
+# 1 "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/boards/nrf52833dk_nrf52833.overlay" 1
+# 31 "C:/work/git/nanopower/npz2100-nrf/npz2100_sample/boards/nrf52833dk_nrf52833.overlay"
 &i2c0 {
  status = "okay";
 
@@ -1124,11 +1124,36 @@ zephyr_udc0: &usbd {
 
  clock-frequency = <100000>;
 
- npz2100: npz2100@6f {
+ npz2100: npz2100@3C {
   compatible = "nanopower,npz2100";
-  reg = <0x6f>;
+  reg = <0x3C>;
   label = "NPZ2100";
  };
+};
+
+
+&pinctrl {
+ uart0_default: uart0_default {
+  group1 {
+   psels = <((((((0) * 32U) + (6)) & 0x1FFU) << 0U) | ((0U & 0xFFU) << 24U))>;
+  };
+ };
+
+ uart0_sleep: uart0_sleep {
+  group1 {
+   psels = <((((((0) * 32U) + (6)) & 0x1FFU) << 0U) | ((0U & 0xFFU) << 24U))>;
+   low-power-enable;
+  };
+ };
+};
+
+
+&uart0 {
+ status = "okay";
+ current-speed = <115200>;
+ pinctrl-0 = <&uart0_default>;
+ pinctrl-1 = <&uart0_sleep>;
+ pinctrl-names = "default", "sleep";
 };
 # 0 "<command-line>" 2
 # 1 "C:/work/ncs/v3.0.2/zephyr/misc/empty_file.c"
