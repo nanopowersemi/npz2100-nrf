@@ -1,7 +1,0 @@
-default: npz2100_sample
-build_dir: C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build
-domains:
-  - name: npz2100_sample
-    build_dir: C:/work/git/nanopower/npz2100-nrf/npz2100_sample/build/npz2100_sample
-flash_order:
-  - npz2100_sample

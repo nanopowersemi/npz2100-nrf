@@ -4,9 +4,18 @@
 
 *.emSession
 
+# Ignore NCS/Zephyr
+build/
+build-*/
+build_*/
+twister-out*
+sanity-out*
 
-**/_build
-Output/
+# temp files
+*.log
+*.obj
+*.o
+*.d
 
 ### C ###
 # Prerequisites
