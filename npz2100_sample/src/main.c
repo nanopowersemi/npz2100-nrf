@@ -37,6 +37,7 @@
 #include <zephyr/logging/log.h>
 
 #include <drivers/npz2100.h>
+#include "npz2100_regmap.h"
 
 LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 
@@ -47,66 +48,6 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 static const struct device *const npz2100 =
 	DEVICE_DT_GET(DT_NODELABEL(npz2100));
 
-/* -------------------------------------------------------------------------
- * Tool-generated register map.
- *
- * Replace this placeholder with the actual output from the Nanopower
- * configuration tool.  The byte-stream format is:
- *   [length] [start_addr] [data_0] ... [data_(length-2)]
- * where length = 1 (start_addr) + N (data bytes).
- *
- * The diff inside npz2100_apply_regmap() ensures only registers that
- * changed since the last boot are actually written to the nPZ2100.
- * On a warm boot where nothing changed, zero I²C transactions are issued.
- * ---------------------------------------------------------------------- */
-static const uint8_t regmap[] = {
-	/* ---- Global configuration (IOCFG1 @ 0x05 through TOUT_H @ 0x0D) -- */
-	10, 0x05,
-	0x00,       /* IOCFG1  */
-	0x00,       /* IOCFG2  */
-	0xFF,       /* IOCFG3: all INT pull-ups enabled at ~100 kΩ            */
-	0x00,       /* IOCFG4  */
-	0x1D,       /* IOCFG5: SPI_AUTO=1, I2C pull-ups auto, PSW_SR=1        */
-	0x03,       /* SYSCFG1: peripheral 1 and 2 as wake-up sources          */
-	0x04,       /* SYSCFG2: ADC3 (battery) as wake-up source               */
-	0xFF,       /* TOUT_L:  maximum periodic time-out (LSB)                */
-	0xFF,       /* TOUT_H:  maximum periodic time-out (MSB)                */
-
-	/* ---- Peripheral 1: I²C temperature sensor @ 0x48 ----------------- */
-	15, 0x1F,
-	0x00,       /* P_BANK:  slot 0                                         */
-	0x01,       /* CFGP1:   periodic power-on, poll+read+compare           */
-	0x00,       /* IOP1:    SW_LP1, INT1, CSN1                             */
-	0x00,       /* MODP1:   16-bit unsigned, default threshold trigger     */
-	0x00, 0x01, /* PERP1:   polling period = 256 system clocks             */
-	0x01,       /* NCMDP1:  1 initialisation command in SRAM               */
-	0x48,       /* ADDRP1:  sensor I²C address                             */
-	0x00,       /* RREGP1:  read from register 0x00                        */
-	0x20, 0x1C, /* THROVP1: over-threshold = 0x1C20 (~+28 °C for TMP117)  */
-	0x00, 0x00, /* THRUNP1: under-threshold = 0 (disabled)                 */
-	0x08,       /* TWTP1:   post-init wait before read                     */
-
-	/* ---- Peripheral 2–6: disabled (default state) --------------------- */
-	15, 0x1F,
-	0x01, 0x00, 0x15, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00,
-
-	15, 0x1F,
-	0x02, 0x00, 0x2A, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00,
-
-	15, 0x1F,
-	0x03, 0x00, 0x3F, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00,
-
-	15, 0x1F,
-	0x04, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00,
-
-	15, 0x1F,
-	0x05, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00,
-};
 
 /* -------------------------------------------------------------------------
  * Sensor initialisation commands stored in nPZ2100 SRAM.
@@ -238,7 +179,7 @@ int main(void)
 	/*    Only registers that differ from the shadow are written.          */
 	/*    On a typical warm boot this is zero I²C transactions.           */
 	/* ------------------------------------------------------------------ */
-	ret = npz2100_apply_regmap(npz2100, regmap, sizeof(regmap));
+	ret = npz2100_apply_regmap(npz2100, npz2100_regmap, sizeof(npz2100_regmap));
 	if (ret != 0) {
 		LOG_ERR("apply_regmap failed: %d", ret);
 	}
@@ -252,7 +193,7 @@ int main(void)
 	/*    A production application would check the reset source to decide  */
 	/*    whether SRAM needs re-initialising (only on cold/POR boot).      */
 	/* ------------------------------------------------------------------ */
-	if (reason.rst_src == NPZ2100_RST_SRC_POR) {
+	if (reason.rst_src == NPZ2100_RST_SRC_POR && reason.timeout == 0) {
 		LOG_INF("Power-on reset detected - writing SRAM init commands");
 		ret = npz2100_sram_write(npz2100, 0x00u,
 					 sensor_init_cmds,
@@ -304,6 +245,8 @@ int main(void)
 	/*    This is the last instruction that executes.                      */
 	/* ------------------------------------------------------------------ */
 	LOG_INF("Returning to idle - nRF52833 power will be cut");
+
+	k_msleep(1000);
 
 	ret = npz2100_enter_idle(npz2100);
 
