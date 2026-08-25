@@ -5,15 +5,15 @@
  * drivers/npz2100/npz2100_zephyr.c
  * ----------------------------------
  * Zephyr device-model wrapper for the nPZ2100 power-saving IC.
- * Target: nRF52833 / NCS 3.0.2.
+ * Target: nRF5x / NCS 3.3.4.
  *
  * Power architecture
  * ------------------
- * The nPZ2100 controls the nRF52833 host power switch (SW_HP).  When the
- * nPZ2100 enters idle mode it cuts power to the nRF52833 completely.
+ * The nPZ2100 controls the nRF5x host power switch (SW_HP).  When the
+ * nPZ2100 enters idle mode it cuts power to the nRF5x completely.
  * There is no always-on interrupt line between the two chips.
  *
- * Every nRF52833 boot is a fresh start caused by the nPZ2100 re-enabling
+ * Every nRF5x boot is a fresh start caused by the nPZ2100 re-enabling
  * SW_HP.  The Zephyr device init (npz2100_init) runs at POST_KERNEL, before
  * main().  It sets up the HAL, probes the device, and seeds the shadow with
  * defaults.  It does NOT read back registers or apply a regmap — those are
@@ -26,7 +26,7 @@
  *   npz2100_apply_regmap(dev, map, len); // write only changed registers
  *   ... handle reason, optionally modify shadow ...
  *   npz2100_shadow_flush(dev);           // push runtime changes
- *   npz2100_enter_idle(dev);             // nPZ2100 cuts nRF52833 power
+ *   npz2100_enter_idle(dev);             // nPZ2100 cuts nRF5x power
  *
  * Portability boundary
  * --------------------
@@ -538,13 +538,13 @@ int npz2100_enter_idle(const struct device *dev)
 	int ret;
 
 	k_mutex_lock(&data->lock, K_FOREVER);
-	LOG_INF("Entering idle — nRF52833 power will be cut");
+	LOG_INF("Entering idle — nRF5x power will be cut");
 	ret = err_to_zephyr(npz2100_enter_idle_ll(&data->hal));
 	k_mutex_unlock(&data->lock);
 
 	/*
 	 * If the I²C write succeeded, the nPZ2100 will cut power to the
-	 * nRF52833 within microseconds.  Execution will not reach here
+	 * nRF5x within microseconds.  Execution will not reach here
 	 * in normal operation.
 	 *
 	 * If the write failed (ret != 0), return the error so the caller

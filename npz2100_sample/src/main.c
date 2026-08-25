@@ -4,12 +4,12 @@
  *
  * sample/src/main.c
  * ------------------
- * Reference application for the nPZ2100 driver on nRF52833 / NCS 3.0.2.
+ * Reference application for the nPZ2100 driver on Nordic nRF5x platforms running NCS 3.3.4.
  *
  * Power architecture
  * ------------------
- * The nPZ2100 controls the nRF52833 power supply via SW_HP.  When idle
- * the nPZ2100 cuts power to the nRF52833 completely — there is no always-on
+ * The nPZ2100 controls the nRF5x power supply via SW_HP.  When idle
+ * the nPZ2100 cuts power to the nRF5x completely — there is no always-on
  * interrupt line between the two chips.
  *
  * Every boot of this application was caused by the nPZ2100 re-enabling SW_HP
@@ -20,15 +20,15 @@
  *
  *   1. npz2100_boot_status() — read STA1–STA3, kick watchdog, decode reason.
  *   2. npz2100_readback()    — sync shadow from nPZ2100 (retains config
- *                              across nRF52833 power cycles).
+ *                              across nRF5x power cycles).
  *   3. npz2100_apply_regmap() — write only registers that differ from shadow.
  *   4. Application logic     — handle the wake reason.
  *   5. npz2100_shadow_flush() — push any runtime config changes to device.
- *   6. npz2100_enter_idle()  — hand control back; nRF52833 power cut.
+ *   6. npz2100_enter_idle()  — hand control back; nRF5x power cut.
  *
  * The application never reaches the end of main() in normal operation.
  * npz2100_enter_idle() is the final instruction — after it the nPZ2100
- * cuts nRF52833 power and the MCU stops executing.
+ * cuts nRF5x power and the MCU stops executing.
  */
 
 #include <zephyr/kernel.h>
@@ -43,7 +43,7 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 
 /* -------------------------------------------------------------------------
  * Device handle — obtained from the DT node labelled "npz2100".
- * Defined in boards/nrf52833dk_nrf52833.overlay.
+ * Defined in boards/nRF5xdk_nRF5x.overlay.
  * ---------------------------------------------------------------------- */
 static const struct device *const npz2100 =
 	DEVICE_DT_GET(DT_NODELABEL(npz2100));
@@ -53,7 +53,7 @@ static const struct device *const npz2100 =
  * Sensor initialisation commands stored in nPZ2100 SRAM.
  *
  * The nPZ2100 sends these to the sensor autonomously during polling while
- * the nRF52833 is powered off.  Each pair is (register_addr, value).
+ * the nRF5x is powered off.  Each pair is (register_addr, value).
  * ---------------------------------------------------------------------- */
 static const uint8_t sensor_init_cmds[] = {
 	0x01, 0x00,   /* TMP117: config register, continuous conversion mode */
@@ -100,7 +100,7 @@ static void handle_battery_low(void)
 	/*
 	 * Use the typed helper to modify peripheral 1's polling period
 	 * in the shadow, then flush to device before re-entering idle.
-	 * The change persists across nRF52833 power cycles because the
+	 * The change persists across nRF5x power cycles because the
 	 * nPZ2100 retains its register values while idle.
 	 */
 	npz2100_config_t *shadow = npz2100_get_shadow(npz2100);
@@ -127,9 +127,9 @@ static void handle_battery_low(void)
 /* -------------------------------------------------------------------------
  * main
  *
- * Executes once per nRF52833 boot (= once per nPZ2100 wake cycle).
+ * Executes once per nRF5x boot (= once per nPZ2100 wake cycle).
  * Does not contain a loop — the final call to npz2100_enter_idle() causes
- * the nPZ2100 to cut power to the nRF52833.
+ * the nPZ2100 to cut power to the nRF5x.
  * ---------------------------------------------------------------------- */
 int main(void)
 {
@@ -145,7 +145,7 @@ int main(void)
 		/*
 		 * If the nPZ2100 is not reachable the system cannot re-enter
 		 * idle safely.  Loop here so the watchdog fires and the
-		 * nPZ2100 power-cycles the nRF52833.
+		 * nPZ2100 power-cycles the nRF5x.
 		 */
 		LOG_ERR("nPZ2100 device not ready - waiting for watchdog");
 		while (true) {
@@ -165,7 +165,7 @@ int main(void)
 
 	/* ------------------------------------------------------------------ */
 	/* 2. Sync shadow from device.                                         */
-	/*    The nPZ2100 retains all registers while the nRF52833 is off.    */
+	/*    The nPZ2100 retains all registers while the nRF5x is off.    */
 	/*    Reading back before applying the regmap ensures the diff is      */
 	/*    computed against the device's actual current state.              */
 	/* ------------------------------------------------------------------ */
@@ -241,10 +241,10 @@ int main(void)
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* 7. Re-enter idle.  nPZ2100 will cut nRF52833 power.                */
+	/* 7. Re-enter idle.  nPZ2100 will cut nRF5x power.                */
 	/*    This is the last instruction that executes.                      */
 	/* ------------------------------------------------------------------ */
-	LOG_INF("Returning to idle - nRF52833 power will be cut");
+	LOG_INF("Returning to idle - nRF5x power will be cut");
 
 	k_msleep(1000);
 
