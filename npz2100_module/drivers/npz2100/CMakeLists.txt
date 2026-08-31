@@ -23,6 +23,12 @@
 # npz2100_zephyr.c only, preserving portability of the core driver.
 
 zephyr_library_named(npz2100)
+# Map Kconfig shadow switch to the C preprocessor symbol consumed by
+# npz2100_mid.c and npz2100_zephyr.c.
+zephyr_compile_definitions(
+    NPZ2100_SHADOW_ENABLE=$<IF:$<BOOL:${CONFIG_NPZ2100_SHADOW}>,1,0>
+)
+
 
 # Platform-agnostic core sources (no Zephyr dependencies).
 zephyr_library_sources(

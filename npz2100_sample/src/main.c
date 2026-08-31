@@ -138,6 +138,13 @@ int main(void)
 
 	LOG_INF("--- nPZ2100 sample boot ---");
 
+	if (NPZ2100_SHADOW_ENABLE == 1) {
+		LOG_INF("Shadow mode ON (value: %d)", NPZ2100_SHADOW_ENABLE);
+	} else {
+		LOG_WRN("Shadow mode OFF (value: %d)", NPZ2100_SHADOW_ENABLE);
+	}
+
+
 	/* ------------------------------------------------------------------ */
 	/* 0. Verify the Zephyr device is ready (I²C bus OK, probe passed).   */
 	/* ------------------------------------------------------------------ */

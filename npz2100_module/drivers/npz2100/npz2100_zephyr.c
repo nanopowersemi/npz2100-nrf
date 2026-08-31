@@ -329,6 +329,7 @@ int npz2100_boot_status(const struct device   *dev,
 
 int npz2100_readback(const struct device *dev)
 {
+#if NPZ2100_SHADOW_ENABLE
 	struct npz2100_data *data = dev->data;
 	int ret;
 
@@ -343,6 +344,11 @@ int npz2100_readback(const struct device *dev)
 		LOG_ERR("readback failed: %d", ret);
 	}
 	return ret;
+#else
+	ARG_UNUSED(dev);
+	LOG_INF("readback: shadow disabled (NPZ2100_SHADOW_ENABLE=0) - skipped");
+	return 0;
+#endif
 }
 
 /* ---- apply_regmap ----------------------------------------------------- */
@@ -366,16 +372,21 @@ int npz2100_apply_regmap(const struct device *dev,
 
 	k_mutex_lock(&data->lock, K_FOREVER);
 
+	#if NPZ2100_SHADOW_ENABLE
 	uint8_t ndiff = npz2100_map_diff_count(&data->shadow, map, map_len);
+	#else
+	uint8_t ndiff = 0u; /* shadow disabled — all registers will be written */
+	#endif
 
 	LOG_DBG("apply_regmap: %u register(s) differ from shadow", ndiff);
 
+	#if NPZ2100_SHADOW_ENABLE
 	if (ndiff == 0u) {
-		/* Device already matches — skip all I²C writes. */
 		k_mutex_unlock(&data->lock);
 		LOG_INF("apply_regmap: device in sync, nothing written");
 		return 0;
 	}
+	#endif
 
 	ret = err_to_zephyr(
 		npz2100_map_apply(&data->hal, &data->shadow, map, map_len));
@@ -407,15 +418,14 @@ npz2100_config_t *npz2100_get_shadow(const struct device *dev)
 int npz2100_shadow_flush(const struct device *dev)
 {
 	struct npz2100_data *data = dev->data;
+
+#if !NPZ2100_SHADOW_ENABLE
+	ARG_UNUSED(data);
+	LOG_INF("shadow_flush: shadow disabled (NPZ2100_SHADOW_ENABLE=0) - no-op");
+	return 0;
+#else
 	int ret = 0;
 
-	/*
-	 * Walk every writable non-banked register and every peripheral bank,
-	 * writing via shadow_write_reg() which diffs before each write.
-	 * Consecutive runs of dirty registers could be burst-written for
-	 * extra efficiency, but the diff check already skips unchanged ones
-	 * so the worst case is one I²C transaction per changed register.
-	 */
 	struct { uint8_t addr; uint8_t *field; } regs[] = {
 		{ NPZ2100_REG_IOCFG1,    &data->shadow.iocfg1     },
 		{ NPZ2100_REG_IOCFG2,    &data->shadow.iocfg2     },
@@ -465,7 +475,6 @@ int npz2100_shadow_flush(const struct device *dev)
 						 *regs[i].field));
 	}
 
-	/* Peripheral banks 0–5. */
 	for (uint8_t slot = 0u;
 	     slot <= NPZ2100_P_BANK_MAX && ret == 0;
 	     slot++) {
@@ -480,9 +489,9 @@ int npz2100_shadow_flush(const struct device *dev)
 		LOG_ERR("shadow_flush failed: %d", ret);
 	}
 	return ret;
+#endif /* NPZ2100_SHADOW_ENABLE */
 }
 
-/* ---- SRAM ------------------------------------------------------------- */
 
 int npz2100_sram_write(const struct device *dev,
 		        uint8_t              sram_addr,

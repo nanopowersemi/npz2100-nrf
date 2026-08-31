@@ -49,6 +49,10 @@
  * in an npz2100_config_t.  Returns NULL for read-only or unrecognised addrs.
  * ======================================================================= */
 
+#if NPZ2100_SHADOW_ENABLE
+/* shadow_field, shadow_periph_field, and is_periph_addr are only
+ * needed when shadow tracking is active. */
+
 /**
  * @brief Look up the shadow byte for a non-banked, non-peripheral register.
  *
@@ -144,6 +148,8 @@ static bool is_periph_addr(uint8_t addr)
 {
     return (addr >= NPZ2100_REG_CFGP && addr <= NPZ2100_REG_TCFGP);
 }
+
+#endif /* NPZ2100_SHADOW_ENABLE */
 
 /* =========================================================================
  * Internal: bank select helper
@@ -305,14 +311,15 @@ typedef struct {
     npz2100_config_t    *cfg;
 } apply_ctx_t;
 
+#if NPZ2100_SHADOW_ENABLE
+
 /**
- * @brief Visitor for npz2100_map_apply(): diffs against the shadow and
- *        writes only when the value actually changes.
+ * @brief Visitor for npz2100_map_apply() — shadow mode.
  *
- * P_BANK (0x1F) is treated like any other register — writing it updates
- * cfg->p_bank via shadow_field() / ensure_bank() semantics, and because it
- * goes through the same diff-then-write path, redundant bank reselects
- * (writing the same bank twice in a row) are skipped automatically.
+ * Diffs each register against the shadow and writes only when the value
+ * has changed.  Skips unchanged registers entirely (zero I2C transactions).
+ * P_BANK (0x1F) is handled like any other register: writing it updates
+ * cfg->p_bank so subsequent banked addresses resolve to the correct slot.
  */
 static npz2100_err_t apply_visitor(uint8_t addr, uint8_t value, void *user)
 {
@@ -327,7 +334,7 @@ static npz2100_err_t apply_visitor(uint8_t addr, uint8_t value, void *user)
         return NPZ2100_OK;  /* Read-only / reserved / SRAM — skip silently. */
     }
     if (*field == value) {
-        return NPZ2100_OK;  /* No change — zero I²C transactions. */
+        return NPZ2100_OK;  /* No change — zero I2C transactions. */
     }
 
     npz2100_err_t err = npz2100_reg_write(ctx->hal, addr, value);
@@ -338,20 +345,58 @@ static npz2100_err_t apply_visitor(uint8_t addr, uint8_t value, void *user)
     return NPZ2100_OK;
 }
 
+#else /* NPZ2100_SHADOW_ENABLE == 0 */
+
+/**
+ * @brief Visitor for npz2100_map_apply() — no-shadow mode.
+ *
+ * Writes every register unconditionally without any diff or shadow update.
+ * P_BANK (0x1F) is still written — it must be sent to the device to
+ * select the correct peripheral bank before banked register writes.
+ */
+static npz2100_err_t apply_visitor(uint8_t addr, uint8_t value, void *user)
+{
+    apply_ctx_t *ctx = (apply_ctx_t *)user;
+
+    /* Skip read-only, reserved, and SRAM addresses. */
+    if (addr == NPZ2100_REG_ID    ||
+        addr == NPZ2100_REG_STA1  ||
+        addr == NPZ2100_REG_STA2  ||
+        addr == NPZ2100_REG_STA3  ||
+        addr == NPZ2100_REG_VALP_L ||
+        addr == NPZ2100_REG_VALP_H ||
+        (addr >= NPZ2100_SRAM_WINDOW_BASE)) {
+        return NPZ2100_OK;
+    }
+
+    return npz2100_reg_write(ctx->hal, addr, value);
+}
+
+#endif /* NPZ2100_SHADOW_ENABLE */
+
 npz2100_err_t npz2100_map_apply(const npz2100_hal_t *hal,
                                  npz2100_config_t    *cfg,
                                  const uint8_t        *map,
                                  size_t                map_len)
 {
-    if (hal == NULL || cfg == NULL || map == NULL || map_len == 0u) {
+    if (hal == NULL || map == NULL || map_len == 0u) {
         return NPZ2100_ERR_ARG;
     }
+#if !NPZ2100_SHADOW_ENABLE
+    (void)cfg;  /* cfg unused when shadow is disabled */
+#else
+    if (cfg == NULL) {
+        return NPZ2100_ERR_ARG;
+    }
+#endif
 
     apply_ctx_t ctx = { .hal = hal, .cfg = cfg };
     return map_walk(map, map_len, apply_visitor, &ctx);
 }
 
 /* -------------------------------------------------------------------------*/
+
+#if NPZ2100_SHADOW_ENABLE
 
 npz2100_err_t npz2100_map_readback(const npz2100_hal_t *hal,
                                     npz2100_config_t    *cfg)
@@ -498,7 +543,11 @@ npz2100_err_t npz2100_map_readback(const npz2100_hal_t *hal,
     return NPZ2100_OK;
 }
 
+#endif /* NPZ2100_SHADOW_ENABLE */
+
 /* -------------------------------------------------------------------------*/
+
+#if NPZ2100_SHADOW_ENABLE
 
 /** Context passed to the diff-count visitor. */
 typedef struct {
@@ -555,6 +604,8 @@ uint8_t npz2100_map_diff_count(const npz2100_config_t *cfg,
     return ctx.count;
 }
 
+#endif /* NPZ2100_SHADOW_ENABLE */
+
 /* -------------------------------------------------------------------------*/
 
 /**
@@ -584,7 +635,7 @@ npz2100_err_t npz2100_shadow_write_reg(const npz2100_hal_t *hal,
                                         uint8_t              addr,
                                         uint8_t              value)
 {
-    if (hal == NULL || cfg == NULL) {
+    if (hal == NULL) {
         return NPZ2100_ERR_ARG;
     }
 
@@ -593,11 +644,17 @@ npz2100_err_t npz2100_shadow_write_reg(const npz2100_hal_t *hal,
         return err;
     }
 
+#if NPZ2100_SHADOW_ENABLE
     /* Update shadow — best-effort; ignore unknown addresses. */
-    uint8_t *field = shadow_field(cfg, addr);
-    if (field != NULL) {
-        *field = value;
+    if (cfg != NULL) {
+        uint8_t *field = shadow_field(cfg, addr);
+        if (field != NULL) {
+            *field = value;
+        }
     }
+#else
+    (void)cfg;
+#endif /* NPZ2100_SHADOW_ENABLE */
 
     return NPZ2100_OK;
 }

@@ -47,4 +47,22 @@ module = NPZ2100
 module-str = nPZ2100
 source "subsys/logging/Kconfig.template.log_config"
 
+
+config NPZ2100_SHADOW
+	bool "Enable register shadow tracking"
+	default y
+	help
+	  When enabled (default), the driver maintains an in-memory shadow of
+	  the nPZ2100 register state.  npz2100_apply_regmap() diffs the desired
+	  configuration against the shadow and writes only registers that changed,
+	  minimising I2C bus traffic across repeated boot cycles.
+
+	  When disabled (select n), every register in the regmap is written
+	  unconditionally on every call to npz2100_apply_regmap().
+	  npz2100_readback(), npz2100_shadow_flush(), and npz2100_get_shadow()
+	  become no-ops.  Use this mode if your application always applies a
+	  full regmap on every boot and does not need the diff optimisation.
+
+	  Maps to the C preprocessor symbol NPZ2100_SHADOW_ENABLE.
+
 endif # NPZ2100

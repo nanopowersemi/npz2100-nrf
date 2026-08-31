@@ -89,6 +89,32 @@
 #ifndef NPZ2100_MID_H
 #define NPZ2100_MID_H
 
+/* =========================================================================
+ * Shadow feature compile-time switch
+ *
+ * NPZ2100_SHADOW_ENABLE = 1  (default)
+ *   All write operations diff against an in-memory shadow of the device
+ *   register state.  Only changed registers are written to the device,
+ *   minimising I2C bus traffic across repeated boot cycles.
+ *
+ * NPZ2100_SHADOW_ENABLE = 0
+ *   Shadow tracking is disabled.  Every register in the regmap is written
+ *   unconditionally on every call to npz2100_map_apply().
+ *   npz2100_map_readback(), npz2100_map_diff_count(), and
+ *   npz2100_shadow_write_reg() become no-ops and return NPZ2100_OK.
+ *   npz2100_get_shadow() / NPZ2100_GetShadow() return NULL.
+ *   NPZ2100_ShadowFlush() / npz2100_shadow_flush() become no-ops.
+ *
+ * To disable shadow tracking, define NPZ2100_SHADOW_ENABLE=0 in your
+ * project preprocessor symbols before including any npz2100 header:
+ *   - STM32CubeIDE: Project → Properties → C/C++ Build → Settings →
+ *     MCU GCC Compiler → Preprocessor → Defined symbols: NPZ2100_SHADOW_ENABLE=0
+ *   - NCS/Zephyr:   prj.conf: CONFIG_NPZ2100_SHADOW=n  (see Kconfig)
+ * ======================================================================= */
+#ifndef NPZ2100_SHADOW_ENABLE
+  #define NPZ2100_SHADOW_ENABLE  1
+#endif
+
 #include "npz2100_hal.h"
 #include "npz2100_regs_system.h"
 #include "npz2100_regs_io.h"
@@ -394,28 +420,30 @@ npz2100_err_t npz2100_map_apply(const npz2100_hal_t *hal,
                                  const uint8_t       *map,
                                  size_t               map_len);
 
+/* npz2100_map_readback and npz2100_map_diff_count are only meaningful
+ * when shadow tracking is enabled.  When NPZ2100_SHADOW_ENABLE=0 they
+ * are not declared — calling them is a compile-time error, making it
+ * obvious that they have no effect without the shadow. */
+#if NPZ2100_SHADOW_ENABLE
+
 /**
  * @brief Read all device registers back and update the shadow.
  *
- * Useful after reset or power-cycle to resync the shadow with actual
- * device state before the first npz2100_map_apply() call.
- *
- * Read-only registers (STA1–STA3, ID, VALP, VAL_ADC*, LOGCADDR) are read
- * but not stored in the shadow (they have no shadow field).
+ * Only available when NPZ2100_SHADOW_ENABLE=1.
+ * No-op / not declared when NPZ2100_SHADOW_ENABLE=0.
  *
  * @param[in]  hal  Pointer to initialised HAL descriptor.
  * @param[out] cfg  Shadow struct to populate.
- * @return NPZ2100_OK, or an I²C error.
+ * @return NPZ2100_OK, or an I2C error.
  */
 npz2100_err_t npz2100_map_readback(const npz2100_hal_t *hal,
                                     npz2100_config_t    *cfg);
 
 /**
- * @brief Compute the number of registers that differ between @p map and @p cfg.
+ * @brief Count registers that differ between the shadow and the regmap.
  *
- * Non-destructive — does not write to the device or modify the shadow.
- * Parses the same byte-stream format as npz2100_map_apply().
- * Useful for logging or asserting before a critical apply.
+ * Only available when NPZ2100_SHADOW_ENABLE=1.
+ * Returns 0 unconditionally (no diff possible) when shadow is disabled.
  *
  * @param[in] cfg      Current shadow.
  * @param[in] map      Byte-stream register map to compare against.
@@ -425,6 +453,8 @@ npz2100_err_t npz2100_map_readback(const npz2100_hal_t *hal,
 uint8_t npz2100_map_diff_count(const npz2100_config_t *cfg,
                                 const uint8_t          *map,
                                 size_t                  map_len);
+
+#endif /* NPZ2100_SHADOW_ENABLE */
 
 /**
  * @brief Validate a regmap byte stream without applying it.
@@ -442,14 +472,11 @@ npz2100_err_t npz2100_map_validate(const uint8_t *map, size_t map_len);
 /**
  * @brief Write a single register immediately and update the shadow.
  *
- * Convenience function for one-off register updates without going through
- * a full map apply cycle.  Issues one I²C transaction.
- *
- * For banked peripheral registers (0x20–0x2D), use the typed peripheral
- * helpers instead — they select the correct P_BANK automatically.
+ * When NPZ2100_SHADOW_ENABLE=0, this function writes the register
+ * directly without any shadow interaction.
  *
  * @param[in]     hal    Pointer to initialised HAL descriptor.
- * @param[in,out] cfg    Shadow to update.
+ * @param[in,out] cfg    Shadow to update (ignored when shadow disabled).
  * @param[in]     addr   Register address.
  * @param[in]     value  Value to write.
  * @return NPZ2100_OK or an error code.
