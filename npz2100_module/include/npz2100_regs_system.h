@@ -182,9 +182,9 @@ extern "C" {
 #define NPZ2100_SYSCFG2_WUP_ADC3_MSK      (0x04u)
 #define NPZ2100_SYSCFG2_WUP_ADC3_POS      (2u)
 
-/** [4] TOUT_EXT: extend time-out unit to 2-second increments. */
-#define NPZ2100_SYSCFG2_TOUT_EXT_MSK      (0x10u)
-#define NPZ2100_SYSCFG2_TOUT_EXT_POS      (4u)
+/** [5] TOUT_EXT: 0=TOUT in system clock periods, 1=TOUT in 2-second increments. */
+#define NPZ2100_SYSCFG2_TOUT_EXT_MSK      (0x20u)
+#define NPZ2100_SYSCFG2_TOUT_EXT_POS      (5u)
 #define NPZ2100_SYSCFG2_TOUT_EXT(v)       (uint8_t)(((v) & 0x01u) << NPZ2100_SYSCFG2_TOUT_EXT_POS)
 
 /** [6] SCLK_SEL: 0 = low-power oscillator, 1 = crystal XO. */

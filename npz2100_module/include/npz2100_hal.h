@@ -58,7 +58,7 @@ typedef enum {
  * buf[0] is always the target register address; buf[1..len-1] is the data.
  * The implementation must issue a single I²C transfer (START, addr+W, buf[0..len-1], STOP).
  *
- * @param[in] i2c_addr  7-bit I²C address of the nPZ2100 (typically 0x6F).
+ * @param[in] i2c_addr  7-bit I²C address of the nPZ2100 (factory default 0x3C).
  * @param[in] buf       Pointer to buffer: [reg_addr, data0, data1, ...].
  * @param[in] len       Total number of bytes in buf (register byte included).
  * @param[in] ctx       User context pointer passed through from npz2100_hal_t.
@@ -115,7 +115,7 @@ typedef struct {
 } npz2100_hal_t;
 
 /** Default I²C address (verify with hardware strapping). */
-#define NPZ2100_I2C_ADDR_DEFAULT  (0x6Fu)
+#define NPZ2100_I2C_ADDR_DEFAULT  (0x3Cu)
 
 /* -------------------------------------------------------------------------
  * Low-level primitives (used internally; exposed for advanced users)

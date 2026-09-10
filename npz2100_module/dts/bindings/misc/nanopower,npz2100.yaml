@@ -16,9 +16,9 @@
 #   &i2c0 {
 #       status = "okay";
 #       clock-frequency = <I2C_BITRATE_STANDARD>;
-#       npz2100: npz2100@6f {
+#       npz2100: npz2100@3c {
 #           compatible = "nanopower,npz2100";
-#           reg = <0x6f>;
+#           reg = <0x3c>;
 #           label = "NPZ2100";
 #       };
 #   };
@@ -45,7 +45,7 @@ properties:
     required: true
     description: |
       7-bit I²C address of the nPZ2100.
-      Factory default: 0x6F.
+      Factory default: 0x3C.
       Adjust if hardware strapping selects a different address.
 
   label:

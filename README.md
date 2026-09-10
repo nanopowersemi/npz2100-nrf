@@ -145,7 +145,7 @@ In the nRF Connect panel:
 Expected first-boot output:
 
 ```
-[00:00:00.008] <inf> npz2100: nPZ2100 ready on i2c@40003000 @ 0x3C
+[00:00:00.008] <inf> npz2100: nPZ2100 ready on i2c@40003000 @ 0x3c
 [00:00:00.012] <inf> app: --- nPZ2100 sample boot ---
 [00:00:00.015] <inf> npz2100: boot_status: STA1=0x00 STA2=0x00 STA3=0x00
 [00:00:00.016] <inf> npz2100:   reset_src: Power-on reset (0x00)
@@ -182,9 +182,9 @@ and I²C address to match your hardware:
     status = "okay";
     clock-frequency = <I2C_BITRATE_STANDARD>;   /* 100 kHz */
 
-    npz2100: npz2100@3C {
+    npz2100: npz2100@3c {
         compatible = "nanopower,npz2100";
-        reg = <0x3C>;
+        reg = <0x3c>;
         label = "NPZ2100";
     };
 };
