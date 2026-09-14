@@ -1,4 +1,4 @@
-# nPZ2100 — nRF Connect SDK Driver Package
+# nPZ2100 - nRF Connect SDK Driver Package
 
 **Target:** nRF Host Chip · **SDK:** NCS 3.0.2 · **IDE:** VS Code + nRF Connect extension
 
@@ -15,7 +15,8 @@ npz2100_ncs/
 │   ├── Kconfig
 │   ├── drivers/npz2100/
 │   │   ├── npz2100.c            ← Platform-agnostic HAL primitives
-│   │   ├── npz2100_mid.c        ← Mid-level API (regmap, shadow, typed helpers)
+│   │   ├── npz2100_lib.c        ← Lib API (regmap, shadow, typed helpers)
+│   │   ├── npz2100_datalog.c    ← SRAM data-log extraction and parsing
 │   │   ├── npz2100_zephyr.c     ← Zephyr device-model wrapper
 │   │   ├── CMakeLists.txt
 │   │   └── Kconfig
@@ -24,7 +25,8 @@ npz2100_ncs/
 │   └── include/
 │       ├── drivers/npz2100.h    ← Public Zephyr API (include this in your app)
 │       ├── npz2100_hal.h
-│       ├── npz2100_mid.h
+│       ├── npz2100_lib.h
+│       ├── npz2100_datalog.h    ← SRAM data-log extraction and parsing
 │       ├── npz2100_regs_system.h
 │       ├── npz2100_regs_io.h
 │       ├── npz2100_regs_periph.h
@@ -55,9 +57,9 @@ Install the nRF Connect SDK through the **nRF Connect for VS Code** extension:
 
 ---
 
-## Quick start — 5 steps
+## Quick start - 5 steps
 
-### Step 1 — Extract the zip
+### Step 1 - Extract the zip
 
 Extract this zip to a location of your choice. The result must be:
 
@@ -67,11 +69,11 @@ Extract this zip to a location of your choice. The result must be:
 └── npz2100_sample/
 ```
 
-Keep both folders as siblings — the sample's `CMakeLists.txt` references the module via a relative path (`../npz2100_module`).
+Keep both folders as siblings - the sample's `CMakeLists.txt` references the module via a relative path (`../npz2100_module`).
 
 ---
 
-### Step 2 — Open the sample in VS Code
+### Step 2 - Open the sample in VS Code
 
 ```
 File → Open Folder → select npz2100_ncs/npz2100_sample/
@@ -81,7 +83,7 @@ VS Code will detect the nRF Connect application structure automatically.
 
 ---
 
-### Step 3 — Add a build configuration
+### Step 3 - Add a build configuration
 
 In the **nRF Connect** sidebar panel:
 
@@ -91,7 +93,7 @@ In the **nRF Connect** sidebar panel:
 4. Leave all other settings at default
 5. Click **Build Configuration**
 
-The `CMakeLists.txt` in `npz2100_sample/` registers `npz2100_module/` automatically via `ZEPHYR_EXTRA_MODULES` — no additional setup is required.
+The `CMakeLists.txt` in `npz2100_sample/` registers `npz2100_module/` automatically via `ZEPHYR_EXTRA_MODULES` - no additional setup is required.
 
 > **Board overlay:** The sample includes a reference overlay for the nRF52833 DK.
 > Rename or replace it with an overlay matching your target board.
@@ -99,7 +101,7 @@ The `CMakeLists.txt` in `npz2100_sample/` registers `npz2100_module/` automatica
 
 ---
 
-### Step 4 — Connect your hardware
+### Step 4 - Connect your hardware
 
 Wire the nPZ2100 to your nRF Host Chip:
 
@@ -109,7 +111,7 @@ Wire the nPZ2100 to your nRF Host Chip:
 | SCL | I²C SCL pin of your nRF Host Chip | Check your board's default I²C0 SCL |
 | VBAT | VDD (3.0 V) | Device VDD or external supply |
 | VSS | GND | |
-| SW_HP | nRF Host Chip VDD | **Power control line — see below** |
+| SW_HP | nRF Host Chip VDD | **Power control line - see below** |
 
 **Required bypass capacitors** (place as close to the nPZ2100 as possible):
 
@@ -128,13 +130,13 @@ or power switch IC rated for the chip's current requirements.
 > **For initial evaluation on a DK**, you can leave SW_HP disconnected and
 > power the nRF Host Chip from the DK's USB. The driver will still initialise,
 > communicate with the nPZ2100, and `npz2100_enter_idle()` will write the
-> idle command — but the nRF Host Chip will remain powered since SW_HP is not
+> idle command - but the nRF Host Chip will remain powered since SW_HP is not
 > connected to its supply. This is sufficient to test I²C communication,
 > register configuration, and wake-reason decoding.
 
 ---
 
-### Step 5 — Build, flash, and observe
+### Step 5 - Build, flash, and observe
 
 In the nRF Connect panel:
 
@@ -150,8 +152,8 @@ Expected first-boot output:
 [00:00:00.015] <inf> npz2100: boot_status: STA1=0x00 STA2=0x00 STA3=0x00
 [00:00:00.016] <inf> npz2100:   reset_src: Power-on reset (0x00)
 [00:00:00.031] <inf> npz2100: apply_regmap: 18 register(s) written
-[00:00:00.034] <inf> app: Returning to idle — nRF Host Chip power will be cut
-[00:00:00.036] <inf> npz2100: Entering idle — nRF Host Chip power will be cut
+[00:00:00.034] <inf> app: Returning to idle - nRF Host Chip power will be cut
+[00:00:00.036] <inf> npz2100: Entering idle - nRF Host Chip power will be cut
 ```
 
 If you see `nPZ2100 not found`, check your SDA/SCL wiring and verify the
@@ -174,7 +176,7 @@ boards/
 where `<board_target>` matches the board string used in the build configuration
 (e.g. `nrf5340dk_nrf5340_cpuapp`, `nrf9160dk_nrf9160`, `your_custom_board`).
 
-Minimal overlay content — adjust the I²C controller (`&i2c0`, `&i2c1`, etc.)
+Minimal overlay content - adjust the I²C controller (`&i2c0`, `&i2c1`, etc.)
 and I²C address to match your hardware:
 
 ```dts
@@ -261,7 +263,7 @@ npz2100_enter_idle(npz2100);
 
 ## Adding the module to your own application
 
-### Option A — ZEPHYR_EXTRA_MODULES (no west.yml change)
+### Option A - ZEPHYR_EXTRA_MODULES (no west.yml change)
 
 Copy `npz2100_module/` next to your application and add to your
 `CMakeLists.txt` before `find_package(Zephyr ...)`:
@@ -272,7 +274,7 @@ list(APPEND ZEPHYR_EXTRA_MODULES
 )
 ```
 
-### Option B — west.yml (production, recommended)
+### Option B - west.yml (production, recommended)
 
 Add the module as a West project and run `west update`:
 
@@ -285,6 +287,83 @@ projects:
 ```
 
 Then remove the `ZEPHYR_EXTRA_MODULES` line from `CMakeLists.txt`.
+
+
+---
+
+## SRAM data-log
+
+The nPZ2100 autonomously logs peripheral sensor readings into its SRAM while
+the nRF Host Chip is powered off.  Use `npz2100_datalog.h` to extract and
+parse the log after waking up.
+
+`npz2100_datalog.c` is compiled automatically - it is registered in the
+module's `CMakeLists.txt` alongside `npz2100_lib.c`.
+
+Add the include in `main.c`:
+
+```c
+#include <drivers/npz2100.h>
+#include "npz2100_datalog.h"   /* include directly - platform-agnostic */
+```
+
+### Extracting the log on FLOG wake
+
+The `FLOG` flag in `reason.log_full` indicates the log is full.
+Extract the log before re-entering idle to avoid losing data.
+
+```c
+if (reason.log_full) {
+
+    npz2100_datalog_info_t  info;
+    npz2100_datalog_entry_t entries[64];
+    size_t count = 0u;
+
+    /* Get the HAL handle and shadow from the Zephyr device */
+    struct npz2100_data *data = npz2100->data;
+    npz2100_hal_t    *hal    = &data->hal;
+    npz2100_config_t *shadow = npz2100_get_shadow(npz2100);
+
+    /* 1. Read metadata: LOGCFG, LOGCADDR, idle-entry timestamp */
+    npz2100_datalog_read_info(hal, shadow, &info);
+
+    /* 2. Read and parse all entries - oldest-first, rotation handled */
+    npz2100_datalog_read_entries(hal, shadow, &info,
+                                  entries, 64u, &count);
+
+    /* 3. Process entries */
+    for (size_t i = 0u; i < count; i++) {
+        npz2100_datalog_entry_t *e = &entries[i];
+        /* Fields: e->peripheral, e->triggered, e->timestamp, e->value */
+        LOG_INF("slot=%u trig=%d val=0x%04X",
+                e->peripheral, e->triggered, e->value);
+    }
+
+    /* 4. Clear log so next idle cycle starts fresh */
+    npz2100_datalog_clear(hal, shadow, &info);
+}
+```
+
+### Data-log API summary
+
+| Function | Description |
+|---|---|
+| `npz2100_datalog_read_info(hal, cfg, &info)` | Read LOGCFG + LOGCADDR + idle-entry timestamp |
+| `npz2100_datalog_entry_size(cfg, slot)` | Byte size of one entry for a peripheral slot |
+| `npz2100_datalog_parse_entry(buf, len, cfg, &entry)` | Parse one entry from a raw buffer |
+| `npz2100_datalog_read_raw(hal, cfg, &info, buf, len, &n)` | Raw SRAM read, oldest-first |
+| `npz2100_datalog_read_entries(hal, cfg, &info, entries, max, &n)` | Read + parse all entries |
+| `npz2100_datalog_clear(hal, cfg, &info)` | Erase log region, reset write pointer |
+
+All functions are platform-agnostic - they take `npz2100_hal_t*` and
+`npz2100_config_t*` directly, not a `struct device*`.
+
+### Log rotation
+
+Set `LOG_ROT=1` in your regmap so the nPZ2100 wraps around instead of
+stopping on a full log.  The `reason.log_full` flag will not be set when
+rotation is enabled - check `info.rotated` after `read_info()` instead.
+`read_entries()` always returns entries oldest-first regardless of rotation.
 
 ---
 
@@ -307,7 +386,7 @@ Then remove the `ZEPHYR_EXTRA_MODULES` line from `CMakeLists.txt`.
 ```c
 #include <drivers/npz2100.h>
 
-/* Boot sequence — call in this order on every boot */
+/* Boot sequence - call in this order on every boot */
 int npz2100_boot_status(dev, &reason);   // read wake reason + kick watchdog
 int npz2100_readback(dev);               // sync shadow from device
 int npz2100_apply_regmap(dev, map, len); // write only changed registers
@@ -321,7 +400,7 @@ int npz2100_sram_write(dev, addr, data, len);
 int npz2100_sram_read(dev, addr, data, len);
 
 /* Control */
-int npz2100_enter_idle(dev);   // does not return — nPZ2100 cuts power
+int npz2100_enter_idle(dev);   // does not return - nPZ2100 cuts power
 int npz2100_soft_reset(dev);
 int npz2100_probe(dev);        // verify ID register = 0x74
 ```

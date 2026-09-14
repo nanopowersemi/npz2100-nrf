@@ -32,7 +32,7 @@ cmake_minimum_required(VERSION 3.20)
 #
 # The path below is relative to this CMakeLists.txt.  It assumes the
 # delivered zip is extracted so that npz2100_module/ and npz2100_sample/
-# are siblings — the expected layout:
+# are siblings - the expected layout:
 #
 #   npz2100_ncs/
 #   ├── npz2100_module/      ← Zephyr module (driver, headers, bindings)

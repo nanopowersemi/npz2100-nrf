@@ -1,6 +1,6 @@
 /**
  * @file npz2100_regs_system.h
- * @brief Register addresses and bitfield macros — System / Global block.
+ * @brief Register addresses and bitfield macros - System / Global block.
  *
  * Covers: IDLE_RST, ID, STA1–STA3, SYSCFG1–SYSCFG2, TOUT, GCT,
  *         GCTALM, WDOG, GTC_CFG, PA_CFG.
@@ -13,8 +13,8 @@
  *  NPZ2100_<REG>_<FIELD>(v)   Encode value v into the field position.
  *  NPZ2100_<REG>_<FIELD>_GET(r) Extract field value from raw register byte r.
  *
- * @version 0.7
- * @date    2026-05-06
+ * @version 0.8
+ * @date    2026-09-11
  */
 
 #ifndef NPZ2100_REGS_SYSTEM_H
@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 /* =========================================================================
- * IDLE_RST  —  0x00  (R/W)
+ * IDLE_RST  -  0x00  (R/W)
  * Put device in idle mode or trigger a reset.
  * Always reads as 0x00.
  * ======================================================================= */
@@ -41,14 +41,14 @@ extern "C" {
 #define NPZ2100_IDLE_RST_SYS_RESET        (0x5Au)
 
 /* =========================================================================
- * ID  —  0x01  (R)
+ * ID  -  0x01  (R)
  * Device identification.  Always reads 0x74.
  * ======================================================================= */
 #define NPZ2100_REG_ID                    (0x01u)
 #define NPZ2100_ID_EXPECTED               (0x74u)
 
 /* =========================================================================
- * STA1  —  0x02  (R)
+ * STA1  -  0x02  (R)
  * Wake-up / reset status flags.
  * ======================================================================= */
 #define NPZ2100_REG_STA1                  (0x02u)
@@ -95,7 +95,7 @@ extern "C" {
 #define NPZ2100_STA1_FTOUT_GET(r)         (((r) & NPZ2100_STA1_FTOUT_MSK) >> NPZ2100_STA1_FTOUT_POS)
 
 /* =========================================================================
- * STA2  —  0x03  (R)
+ * STA2  -  0x03  (R)
  * Peripheral and alarm flags.
  * NOTE: Reading STA1 or STA2 resets the watchdog timer (datasheet §2.2.16).
  * ======================================================================= */
@@ -133,7 +133,7 @@ extern "C" {
 #define NPZ2100_STA2_FLOG_GET(r)          (((r) & NPZ2100_STA2_FLOG_MSK) >> NPZ2100_STA2_FLOG_POS)
 
 /* =========================================================================
- * STA3  —  0x04  (R)
+ * STA3  -  0x04  (R)
  * NAK, event counter, and power-aware flags.
  * ======================================================================= */
 #define NPZ2100_REG_STA3                  (0x04u)
@@ -152,7 +152,7 @@ extern "C" {
 #define NPZ2100_STA3_FPA_GET(r)           (((r) & NPZ2100_STA3_FPA_MSK) >> NPZ2100_STA3_FPA_POS)
 
 /* =========================================================================
- * SYSCFG1  —  0x0A  (R/W)
+ * SYSCFG1  -  0x0A  (R/W)
  * Wake-up source enable per peripheral.
  * ======================================================================= */
 #define NPZ2100_REG_SYSCFG1               (0x0Au)
@@ -167,7 +167,7 @@ extern "C" {
 #define NPZ2100_SYSCFG1_WUPMOD_GET(r)     (((r) & NPZ2100_SYSCFG1_WUPMOD_MSK) >> NPZ2100_SYSCFG1_WUPMOD_POS)
 
 /* =========================================================================
- * SYSCFG2  —  0x0B  (R/W)
+ * SYSCFG2  -  0x0B  (R/W)
  * ADC wake-up enables, clock source selection, TOUT extension.
  * ======================================================================= */
 #define NPZ2100_REG_SYSCFG2               (0x0Bu)
@@ -198,7 +198,7 @@ extern "C" {
 #define NPZ2100_SYSCFG2_SCLK_STATUS_GET(r) (((r) & NPZ2100_SYSCFG2_SCLK_STATUS_MSK) >> NPZ2100_SYSCFG2_SCLK_STATUS_POS)
 
 /* =========================================================================
- * TOUT  —  0x0C–0x0D  (R/W)
+ * TOUT  -  0x0C–0x0D  (R/W)
  * 16-bit time-out before host wake-up.
  * Unit: system clock periods (TOUT_EXT=0) or 2-second steps (TOUT_EXT=1).
  * WARNING: values below 0x0003 cause undefined behaviour.
@@ -208,7 +208,7 @@ extern "C" {
 #define NPZ2100_TOUT_MIN_SAFE             (0x0003u)  /**< Minimum safe TOUT value. */
 
 /* =========================================================================
- * GCT  —  0x10–0x14  (R/W)
+ * GCT  -  0x10–0x14  (R/W)
  * Global time counter (32-bit seconds + 4-bit 1/16 s fractional).
  * A write to GCT_3 (0x14) atomically latches all five bytes.
  * ======================================================================= */
@@ -216,12 +216,12 @@ extern "C" {
 #define NPZ2100_REG_GCT_0                 (0x11u)  /**< Seconds byte 0 (LSB). */
 #define NPZ2100_REG_GCT_1                 (0x12u)
 #define NPZ2100_REG_GCT_2                 (0x13u)
-#define NPZ2100_REG_GCT_3                 (0x14u)  /**< Seconds byte 3 (MSB) — write triggers latch. */
+#define NPZ2100_REG_GCT_3                 (0x14u)  /**< Seconds byte 3 (MSB) - write triggers latch. */
 
 #define NPZ2100_GCT_MS_MSK                (0x0Fu)  /**< Only lower 4 bits valid. */
 
 /* =========================================================================
- * GCTALM  —  0x15–0x18  (R/W)
+ * GCTALM  -  0x15–0x18  (R/W)
  * Global counter alarm (32-bit value in seconds).
  * ======================================================================= */
 #define NPZ2100_REG_GCT_ALM_0             (0x15u)
@@ -230,7 +230,7 @@ extern "C" {
 #define NPZ2100_REG_GCT_ALM_3             (0x18u)
 
 /* =========================================================================
- * WDOG  —  0x19–0x1A  (R/W)
+ * WDOG  -  0x19–0x1A  (R/W)
  * 16-bit watchdog timer in units of 2 seconds.
  * Timer is reset every time STA1 or STA2 is read.
  * ======================================================================= */
@@ -238,7 +238,7 @@ extern "C" {
 #define NPZ2100_REG_WDOG_H                (0x1Au)
 
 /* =========================================================================
- * GTC_CFG  —  0x1B  (R/W)
+ * GTC_CFG  -  0x1B  (R/W)
  * Enable global time counter alarm and watchdog.
  * ======================================================================= */
 #define NPZ2100_REG_GTC_CFG               (0x1Bu)
@@ -254,7 +254,7 @@ extern "C" {
 #define NPZ2100_GTC_CFG_WDOGEN(v)         (uint8_t)(((v) & 0x01u) << NPZ2100_GTC_CFG_WDOGEN_POS)
 
 /* =========================================================================
- * PA_CFG  —  0x1C  (R/W)
+ * PA_CFG  -  0x1C  (R/W)
  * Power-aware mode configuration.
  * ======================================================================= */
 #define NPZ2100_REG_PA_CFG                (0x1Cu)

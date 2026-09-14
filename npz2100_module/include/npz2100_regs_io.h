@@ -1,6 +1,6 @@
 /**
  * @file npz2100_regs_io.h
- * @brief Register addresses and bitfield macros — I/O Configuration block.
+ * @brief Register addresses and bitfield macros - I/O Configuration block.
  *
  * Covers: IOCFG1 (0x05), IOCFG2 (0x06), IOCFG3 (0x07),
  *         IOCFG4 (0x08), IOCFG5 (0x09).
@@ -9,12 +9,12 @@
  *  - Power switch modes (host and peripheral)
  *  - Interrupt pin pull-ups and direction
  *  - I²C pull-up control
- *  - SPI auto-disable (HiZ when idle — saves power)
+ *  - SPI auto-disable (HiZ when idle - saves power)
  *  - Gate boost for low VBAT operation
  *  - Drive strength and slew rate
  *
- * @version 0.7
- * @date    2026-05-06
+ * @version 0.8
+ * @date    2026-09-11
  */
 
 #ifndef NPZ2100_REGS_IO_H
@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 /* =========================================================================
- * IOCFG1  —  0x05  (R/W)
+ * IOCFG1  -  0x05  (R/W)
  * Host power switch and peripheral standby switch states.
  * ======================================================================= */
 #define NPZ2100_REG_IOCFG1                (0x05u)
@@ -77,7 +77,7 @@ extern "C" {
 #define NPZ2100_IOCFG1_PSW_VN_ON_GET(r)   (((r) & NPZ2100_IOCFG1_PSW_VN_ON_MSK) >> 7u)
 
 /* =========================================================================
- * IOCFG2  —  0x06  (R/W)
+ * IOCFG2  -  0x06  (R/W)
  * Peripheral power switch modes (SW_LP[1-4]).
  * Each peripheral occupies a 2-bit field; see datasheet Table 23.
  * ======================================================================= */
@@ -96,7 +96,7 @@ extern "C" {
 #define NPZ2100_PSWMOD_S_LOGIC_LOW        (0x03u)  /**< Logic low when peripheral ON.     */
 
 /* =========================================================================
- * IOCFG3  —  0x07  (R/W)
+ * IOCFG3  -  0x07  (R/W)
  * Pull-up enable and strength on INT[1-4] pins.
  * Reset state: all pull-ups enabled at ≈100 kΩ.
  * ======================================================================= */
@@ -114,7 +114,7 @@ extern "C" {
 #define NPZ2100_IOCFG3_PU_S_INTn_GET(r,n) (((r) >> ((n) + 3u)) & 0x01u)
 
 /* =========================================================================
- * IOCFG4  —  0x08  (R/W)
+ * IOCFG4  -  0x08  (R/W)
  * Interrupt pin direction / mode (INTMOD_I[1-4]).
  * Each interrupt occupies a 2-bit field; see datasheet Table 26.
  * ======================================================================= */
@@ -133,7 +133,7 @@ extern "C" {
 #define NPZ2100_INTMOD_OUT_ACTIVE_LOW     (0x03u)  /**< Trigger output, active-low.    */
 
 /* =========================================================================
- * IOCFG5  —  0x09  (R/W)
+ * IOCFG5  -  0x09  (R/W)
  * Miscellaneous I/O options.  Reset state: SPI_AUTO=1, I2C_PUP_EN=1,
  * I2C_PUP_AUTO=1, PSW_SR=1.
  * ======================================================================= */
@@ -161,7 +161,7 @@ extern "C" {
 #define NPZ2100_IOCFG5_I2C_PUP_AUTO(v)    (uint8_t)(((v) & 0x01u) << NPZ2100_IOCFG5_I2C_PUP_AUTO_POS)
 
 /** [4] SPI_AUTO: put SPI outputs in HiZ when interface not in use.
- *  Recommended ON — prevents SPI pins from driving a disabled peripheral. */
+ *  Recommended ON - prevents SPI pins from driving a disabled peripheral. */
 #define NPZ2100_IOCFG5_SPI_AUTO_MSK       (0x10u)
 #define NPZ2100_IOCFG5_SPI_AUTO_POS       (4u)
 #define NPZ2100_IOCFG5_SPI_AUTO(v)        (uint8_t)(((v) & 0x01u) << NPZ2100_IOCFG5_SPI_AUTO_POS)

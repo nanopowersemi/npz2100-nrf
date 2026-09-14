@@ -5,7 +5,7 @@
  * The user must implement two callbacks and populate an npz2100_hal_t struct
  * before calling any API function.  Every I²C transaction is routed through
  * these callbacks, so porting to a new MCU requires only filling in those two
- * functions — nothing else in the driver changes.
+ * functions - nothing else in the driver changes.
  *
  * I²C efficiency note
  * -------------------
@@ -14,8 +14,8 @@
  * one START + one STOP per write, which is critical on a 100 kHz bus shared
  * with low-power sensors.
  *
- * @version 0.7
- * @date    2026-05-06
+ * @version 0.8
+ * @date    2026-09-11
  * @author  Nanopower Semiconductor AS
  */
 
@@ -95,7 +95,7 @@ typedef npz2100_err_t (*npz2100_i2c_read_fn)(uint8_t  i2c_addr,
  * ---------------------------------------------------------------------- */
 
 /**
- * @brief HAL descriptor — populate once and pass to every API call.
+ * @brief HAL descriptor - populate once and pass to every API call.
  *
  * Example (bare-metal pseudocode):
  * @code
@@ -151,7 +151,7 @@ npz2100_err_t npz2100_reg_read(const npz2100_hal_t *hal,
  * @brief Burst-write consecutive registers in a single I²C transaction.
  *
  * Writes @p len bytes from @p data starting at @p start_reg.
- * Uses one START/STOP pair regardless of length — maximally bus-efficient.
+ * Uses one START/STOP pair regardless of length - maximally bus-efficient.
  *
  * @param[in] hal       Pointer to initialised HAL descriptor.
  * @param[in] start_reg First register address.

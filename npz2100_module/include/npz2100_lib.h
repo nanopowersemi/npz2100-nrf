@@ -1,6 +1,6 @@
 /**
- * @file npz2100_mid.h
- * @brief nPZ2100 mid-level API — register map application, shadow diffing,
+ * @file npz2100_lib.h
+ * @brief nPZ2100 lib API - register map application, shadow diffing,
  *        and typed configuration helpers.
  *
  * Layering
@@ -9,9 +9,9 @@
  *   ┌─────────────────────────────────────────────┐
  *   │            Application code                 │
  *   ├─────────────────────────────────────────────┤
- *   │   Mid-level API   (this file + npz2100_mid.c)│
+ *   │   Lib API   (this file + npz2100_lib.c)│
  *   │   • flat byte-stream regmap parsing         │
- *   │   • npz2100_config_t   — flat shadow struct  │
+ *   │   • npz2100_config_t   - flat shadow struct  │
  *   │   • map apply / read-back / diff             │
  *   │   • typed config helpers (system, IO, periph,│
  *   │     ADC, logging, counter)                   │
@@ -25,16 +25,16 @@
  * Register-map format
  * --------------------
  * The external configuration tool produces a flat `const uint8_t[]` byte
- * stream — NOT a struct array. It is a concatenation of variable-length
+ * stream - NOT a struct array. It is a concatenation of variable-length
  * segments, each shaped like this:
  *
  * @code
  *   [length] [start_addr] [data_0] [data_1] ... [data_(length-2)]
  * @endcode
  *
- * - `length`     — total bytes in this segment, INCLUDING start_addr.
+ * - `length`     - total bytes in this segment, INCLUDING start_addr.
  *                  The data payload is therefore `length - 1` bytes.
- * - `start_addr` — first register address; data bytes are written to
+ * - `start_addr` - first register address; data bytes are written to
  *                  start_addr, start_addr+1, start_addr+2, ... in order.
  *
  * Segments are simply concatenated back-to-back with no separator or
@@ -53,7 +53,7 @@
  *   npz2100_map_apply(&hal, &shadow, regmap, sizeof(regmap));
  * @endcode
  *
- * P_BANK (0x1F) is just another addressable register within this stream —
+ * P_BANK (0x1F) is just another addressable register within this stream -
  * it requires no special handling by the caller. When a segment writes to
  * 0x1F, that becomes the active bank for any subsequent banked register
  * addresses (0x20–0x2D) in that same or a later segment, exactly as it
@@ -67,7 +67,7 @@
  * When npz2100_map_apply() is called:
  *   1. The byte stream is parsed segment by segment.
  *   2. Each resulting (addr, value) pair is compared against the shadow.
- *   3. Only registers whose value differs are written to the device — a
+ *   3. Only registers whose value differs are written to the device - a
  *      single I²C transaction per changed register.
  *   4. The shadow is updated to match.
  *
@@ -81,8 +81,8 @@
  * the device, or npz2100_shadow_write_reg() for an immediate single-register
  * write that also updates the shadow.
  *
- * @version 0.7
- * @date    2026-05-06
+ * @version 0.8
+ * @date    2026-09-11
  * @author  Nanopower Semiconductor AS
  */
 
@@ -129,7 +129,7 @@ extern "C" {
 #endif
 
 /* =========================================================================
- * Register map — byte-stream format produced by the configuration tool
+ * Register map - byte-stream format produced by the configuration tool
  * ======================================================================= */
 
 /**
@@ -142,7 +142,7 @@ extern "C" {
 #define NPZ2100_REGMAP_MAX_SEGMENT_DATA  (64u)
 
 /**
- * @brief Result of parsing one regmap segment — used internally and by
+ * @brief Result of parsing one regmap segment - used internally and by
  *        npz2100_map_foreach() callbacks.
  */
 typedef struct {
@@ -152,7 +152,7 @@ typedef struct {
 } npz2100_regmap_segment_t;
 
 /* =========================================================================
- * Shadow / config struct — flat mirror of every writable register
+ * Shadow / config struct - flat mirror of every writable register
  * ======================================================================= */
 
 /**
@@ -162,20 +162,20 @@ typedef struct {
  * Read-only VALP (0x2E–0x2F) is not mirrored here.
  */
 typedef struct {
-    uint8_t cfgp;     /**< 0x20 CFGP  — power mode, polling mode, logging. */
-    uint8_t iop;      /**< 0x21 IOP   — pin assignment.                     */
-    uint8_t modp;     /**< 0x22 MODP  — SPI mode, data type.                */
-    uint8_t perp_l;   /**< 0x23 PERP_L — polling period LSB.                */
-    uint8_t perp_h;   /**< 0x24 PERP_H — polling period MSB.                */
-    uint8_t ncmdp;    /**< 0x25 NCMDP — number of init commands.             */
-    uint8_t addrp;    /**< 0x26 ADDRP — I²C address / SPI byte count.       */
-    uint8_t rregp;    /**< 0x27 RREGP — read register address.               */
-    uint8_t throvp_l; /**< 0x28 THROVP_L — over-threshold LSB.              */
-    uint8_t throvp_h; /**< 0x29 THROVP_H — over-threshold MSB.              */
-    uint8_t thrunp_l; /**< 0x2A THRUNP_L — under-threshold LSB.             */
-    uint8_t thrunp_h; /**< 0x2B THRUNP_H — under-threshold MSB.             */
-    uint8_t twtp;     /**< 0x2C TWTP  — wait time.                          */
-    uint8_t tcfgp;    /**< 0x2D TCFGP — timing/protocol options.            */
+    uint8_t cfgp;     /**< 0x20 CFGP  - power mode, polling mode, logging. */
+    uint8_t iop;      /**< 0x21 IOP   - pin assignment.                     */
+    uint8_t modp;     /**< 0x22 MODP  - SPI mode, data type.                */
+    uint8_t perp_l;   /**< 0x23 PERP_L - polling period LSB.                */
+    uint8_t perp_h;   /**< 0x24 PERP_H - polling period MSB.                */
+    uint8_t ncmdp;    /**< 0x25 NCMDP - number of init commands.             */
+    uint8_t addrp;    /**< 0x26 ADDRP - I²C address / SPI byte count.       */
+    uint8_t rregp;    /**< 0x27 RREGP - read register address.               */
+    uint8_t throvp_l; /**< 0x28 THROVP_L - over-threshold LSB.              */
+    uint8_t throvp_h; /**< 0x29 THROVP_H - over-threshold MSB.              */
+    uint8_t thrunp_l; /**< 0x2A THRUNP_L - under-threshold LSB.             */
+    uint8_t thrunp_h; /**< 0x2B THRUNP_H - under-threshold MSB.             */
+    uint8_t twtp;     /**< 0x2C TWTP  - wait time.                          */
+    uint8_t tcfgp;    /**< 0x2D TCFGP - timing/protocol options.            */
 } npz2100_periph_shadow_t;
 
 /**
@@ -190,7 +190,7 @@ typedef struct {
 typedef struct {
     /* --- System / global (non-banked) ---------------------------------- */
     uint8_t idle_rst;   /**< 0x00 IDLE_RST  */
-    uint8_t p_bank;     /**< 0x1F P_BANK — tracks the currently active bank on
+    uint8_t p_bank;     /**< 0x1F P_BANK - tracks the currently active bank on
                               the device (0–5). Updated whenever 0x1F is
                               written, including via npz2100_map_apply(). */
     uint8_t iocfg1;     /**< 0x05 IOCFG1    */
@@ -283,7 +283,7 @@ typedef struct {
 typedef struct {
     bool    enable;   /**< Enable power-aware mode.                            */
     bool    no_wup;   /**< Disable all wake-ups when PA mode is active.        */
-    uint8_t src;      /**< Source pin/channel — use NPZ2100_PA_SRC_* constants. */
+    uint8_t src;      /**< Source pin/channel - use NPZ2100_PA_SRC_* constants. */
 } npz2100_pa_cfg_t;
 
 /**
@@ -293,25 +293,25 @@ typedef struct {
  */
 typedef struct {
     /* Power and polling */
-    uint8_t  pwmod;         /**< Power mode — use NPZ2100_PWMOD_* constants.    */
-    uint8_t  tmod;          /**< Polling mode — use NPZ2100_TMOD_* constants.   */
+    uint8_t  pwmod;         /**< Power mode - use NPZ2100_PWMOD_* constants.    */
+    uint8_t  tmod;          /**< Polling mode - use NPZ2100_TMOD_* constants.   */
     uint16_t period;        /**< Polling period in system clock periods (≥ 1).  */
 
     /* Pin assignment */
-    uint8_t  psw_pin;       /**< Power switch pin — NPZ2100_IO_PIN_*.           */
-    uint8_t  int_pin;       /**< Interrupt pin — NPZ2100_IO_PIN_*.              */
-    uint8_t  csn_pin;       /**< SPI chip-select pin — NPZ2100_IO_PIN_*.        */
+    uint8_t  psw_pin;       /**< Power switch pin - NPZ2100_IO_PIN_*.           */
+    uint8_t  int_pin;       /**< Interrupt pin - NPZ2100_IO_PIN_*.              */
+    uint8_t  csn_pin;       /**< SPI chip-select pin - NPZ2100_IO_PIN_*.        */
 
     /* Communication protocol */
     bool     use_spi;       /**< true = SPI, false = I²C.                       */
-    uint8_t  spi_mode;      /**< SPI mode — NPZ2100_SPIMOD_*.                   */
+    uint8_t  spi_mode;      /**< SPI mode - NPZ2100_SPIMOD_*.                   */
     uint8_t  i2c_addr;      /**< I²C address (7-bit). Ignored when use_spi=true.*/
     uint8_t  read_reg;      /**< I²C register to read from.                     */
     bool     i2c_read_only; /**< Skip write phase, issue read directly.         */
     uint8_t  i2c_retries;   /**< Number of retries on NAK (0 = abort on NAK).  */
 
     /* Data */
-    uint8_t  dtype;         /**< Data type — NPZ2100_DTYPE_*.                   */
+    uint8_t  dtype;         /**< Data type - NPZ2100_DTYPE_*.                   */
     bool     swap_bytes;    /**< Swap high/low bytes after read.                */
     bool     seq_rw;        /**< Multi-byte sequential addressing.              */
     bool     inv_cmp;       /**< Invert threshold comparison (inside = trigger).*/
@@ -329,13 +329,13 @@ typedef struct {
     /* Logging */
     bool     log_en;        /**< Enable logging for this peripheral.            */
     bool     log_ts;        /**< Include timestamp in log entries.              */
-    uint8_t  log_freq;      /**< Logging frequency — NPZ2100_PLOGF_*.          */
+    uint8_t  log_freq;      /**< Logging frequency - NPZ2100_PLOGF_*.          */
 
     /* SRAM init commands */
     uint8_t  ncmd;          /**< Number of init commands in SRAM.               */
 
     /* Power-aware polling */
-    uint8_t  pamod;         /**< PA polling multiplier — NPZ2100_PAMOD_*.      */
+    uint8_t  pamod;         /**< PA polling multiplier - NPZ2100_PAMOD_*.      */
 } npz2100_periph_cfg_t;
 
 /**
@@ -345,7 +345,7 @@ typedef struct {
     bool    en_ch1;         /**< Enable ADC channel 1 (ADC1 pin).              */
     bool    en_ch2;         /**< Enable ADC channel 2 (ADC2 pin).              */
     bool    en_ch3;         /**< Enable ADC channel 3 (battery reference).     */
-    uint8_t clk_sel;        /**< Sampling clock — NPZ2100_ADC_CLK_*.           */
+    uint8_t clk_sel;        /**< Sampling clock - NPZ2100_ADC_CLK_*.           */
     bool    psync_ch1;      /**< Sync ch.1 with peripheral 1 polling.          */
     bool    psync_ch2;      /**< Sync ch.2 with peripheral 2 polling.          */
     uint8_t throva[3];      /**< Over-threshold for channels 1–3.              */
@@ -366,8 +366,8 @@ typedef struct {
  */
 typedef struct {
     bool     enable;        /**< Enable counter (also resets the count).       */
-    uint8_t  src;           /**< Counter source — NPZ2100_CNT_SRC_*.          */
-    uint32_t trigger;       /**< Trigger value — fires when count == trigger.  */
+    uint8_t  src;           /**< Counter source - NPZ2100_CNT_SRC_*.          */
+    uint32_t trigger;       /**< Trigger value - fires when count == trigger.  */
 } npz2100_counter_cfg_t;
 
 /* =========================================================================
@@ -377,9 +377,9 @@ typedef struct {
 /**
  * @brief Initialise the shadow struct to the nPZ2100 power-on reset defaults.
  *
- * Call this once before using any other mid-level function.
+ * Call this once before using any other lib function.
  * After calling this, the shadow reflects what the device looks like
- * immediately after reset — no I²C transaction is issued.
+ * immediately after reset - no I²C transaction is issued.
  *
  * @param[out] cfg  Pointer to the config shadow to initialise.
  * @return NPZ2100_OK or NPZ2100_ERR_ARG if cfg is NULL.
@@ -401,13 +401,13 @@ npz2100_err_t npz2100_config_init_defaults(npz2100_config_t *cfg);
  *   - If different: write to device, update shadow.
  *   - If identical: skip (zero I²C transactions for that register).
  *
- * P_BANK (0x1F) requires no special handling — it is written like any
+ * P_BANK (0x1F) requires no special handling - it is written like any
  * other register in the stream, and subsequent banked addresses (0x20–0x2D)
  * within the same or a later segment resolve against whatever bank was
  * last written, exactly as on real hardware.
  *
  * @param[in]     hal       Pointer to initialised HAL descriptor.
- * @param[in,out] cfg       Shadow struct — updated for every register written.
+ * @param[in,out] cfg       Shadow struct - updated for every register written.
  * @param[in]     map       Byte-stream register map from the configuration tool.
  * @param[in]     map_len   Total length of @p map in bytes (use sizeof() for
  *                          compile-time arrays).
@@ -422,7 +422,7 @@ npz2100_err_t npz2100_map_apply(const npz2100_hal_t *hal,
 
 /* npz2100_map_readback and npz2100_map_diff_count are only meaningful
  * when shadow tracking is enabled.  When NPZ2100_SHADOW_ENABLE=0 they
- * are not declared — calling them is a compile-time error, making it
+ * are not declared - calling them is a compile-time error, making it
  * obvious that they have no effect without the shadow. */
 #if NPZ2100_SHADOW_ENABLE
 
@@ -556,7 +556,7 @@ npz2100_err_t npz2100_io_set(npz2100_config_t *cfg,
  * Encodes all banked registers (CFGP, IOP, MODP, PERP, NCMDP, ADDRP,
  * RREGP, THROVP, THRUNP, TWTP, TCFGP) for peripheral slot @p slot.
  *
- * Does NOT write P_BANK or touch the device — call npz2100_map_apply()
+ * Does NOT write P_BANK or touch the device - call npz2100_map_apply()
  * or npz2100_periph_apply() afterwards.
  *
  * @param[in,out] cfg   Config shadow.
@@ -572,7 +572,7 @@ npz2100_err_t npz2100_periph_set(npz2100_config_t          *cfg,
  * @brief Write one peripheral's shadow registers to the device immediately.
  *
  * Selects the peripheral bank, diffs against the shadow, and writes only
- * changed registers — then restores P_BANK to 0 on exit.
+ * changed registers - then restores P_BANK to 0 on exit.
  *
  * @param[in]     hal   Pointer to initialised HAL descriptor.
  * @param[in,out] cfg   Config shadow.

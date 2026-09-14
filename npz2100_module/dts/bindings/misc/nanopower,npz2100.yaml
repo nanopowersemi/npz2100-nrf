@@ -8,7 +8,7 @@
 # Power architecture:
 #   The nPZ2100 controls the nRF52833 power supply via its SW_HP host switch.
 #   When idle, it cuts power to the nRF52833 completely.  There is no
-#   always-on interrupt line — every nRF52833 boot is caused by the nPZ2100
+#   always-on interrupt line - every nRF52833 boot is caused by the nPZ2100
 #   re-asserting SW_HP in response to a configured trigger.
 #
 # Minimal overlay:

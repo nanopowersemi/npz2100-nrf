@@ -8,7 +8,7 @@
  *
  * I²C efficiency strategy
  * -----------------------
- * Every write — whether single-register or burst — issues exactly one I²C
+ * Every write - whether single-register or burst - issues exactly one I²C
  * START/STOP pair by prepending the register address to the data in a local
  * stack buffer before handing off to the HAL write callback.
  *
@@ -19,10 +19,10 @@
  * -------------
  * Per datasheet §2.2.16, reading STA1 (0x02) or STA2 (0x03) resets the
  * watchdog timer.  Callers performing periodic status reads should exploit
- * this — there is no separate "kick watchdog" command.
+ * this - there is no separate "kick watchdog" command.
  *
- * @version 0.7
- * @date    2026-05-06
+ * @version 0.8
+ * @date    2026-09-11
  * @author  Nanopower Semiconductor AS
  */
 
@@ -60,7 +60,7 @@ npz2100_err_t npz2100_reg_write(const npz2100_hal_t *hal,
                                  uint8_t              value)
 {
     npz2100_err_t err;
-    /* Stack buffer: [register address, data byte] — one I²C transfer. */
+    /* Stack buffer: [register address, data byte] - one I²C transfer. */
     uint8_t buf[2];
 
     err = hal_check(hal);
@@ -135,7 +135,7 @@ npz2100_err_t npz2100_reg_burst_write(const npz2100_hal_t *hal,
         return NPZ2100_ERR_ARG;
     }
 
-    /* Prepend register address — single I²C START/STOP for the whole burst. */
+    /* Prepend register address - single I²C START/STOP for the whole burst. */
     buf[0] = start_reg;
     for (size_t i = 0u; i < len; i++) {
         buf[i + 1u] = data[i];
@@ -186,7 +186,7 @@ npz2100_err_t npz2100_reg_burst_read(const npz2100_hal_t *hal,
  *   4. Write the result back        (1 I²C write transaction).
  *
  * Total bus cost: 2 transactions.  Use burst writes when multiple fields in
- * the same register need updating — it is cheaper to compute the full byte
+ * the same register need updating - it is cheaper to compute the full byte
  * and call npz2100_reg_write() once.
  */
 npz2100_err_t npz2100_reg_rmw(const npz2100_hal_t *hal,
@@ -211,7 +211,7 @@ npz2100_err_t npz2100_reg_rmw(const npz2100_hal_t *hal,
     /* Step 2–3: clear masked bits, insert new value. */
     current = (uint8_t)((current & ~mask) | (value & mask));
 
-    /* Step 4: write back — single I²C transaction via write primitive. */
+    /* Step 4: write back - single I²C transaction via write primitive. */
     {
         uint8_t buf[2];
         buf[0] = reg;

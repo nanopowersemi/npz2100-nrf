@@ -1,6 +1,6 @@
 /**
  * @file npz2100_regs_periph.h
- * @brief Register addresses and bitfield macros — Per-Peripheral Configuration block.
+ * @brief Register addresses and bitfield macros - Per-Peripheral Configuration block.
  *
  * Covers: P_BANK (0x1F), CFGP (0x20), IOP (0x21), MODP (0x22),
  *         PERP (0x23–0x24), NCMDP (0x25), ADDRP (0x26), RREGP (0x27),
@@ -17,8 +17,8 @@
  *
  * The driver function npz2100_periph_select() handles step 1.
  *
- * @version 0.7
- * @date    2026-05-06
+ * @version 0.8
+ * @date    2026-09-11
  */
 
 #ifndef NPZ2100_REGS_PERIPH_H
@@ -31,7 +31,7 @@ extern "C" {
 #endif
 
 /* =========================================================================
- * P_BANK  —  0x1F  (R/W)
+ * P_BANK  -  0x1F  (R/W)
  * Selects which peripheral's configuration is visible at 0x20–0x2F.
  * ======================================================================= */
 #define NPZ2100_REG_P_BANK                (0x1Fu)
@@ -44,7 +44,7 @@ extern "C" {
 #define NPZ2100_P_BANK_MAX                (5u)
 
 /* =========================================================================
- * CFGP  —  0x20  (R/W)
+ * CFGP  -  0x20  (R/W)
  * Peripheral power mode, polling mode, and logging configuration.
  * ======================================================================= */
 #define NPZ2100_REG_CFGP                  (0x20u)
@@ -95,7 +95,7 @@ extern "C" {
 #define NPZ2100_PLOGF_THRESHOLD_ONLY      (0x03u)  /**< Only on threshold crossing.  */
 
 /* =========================================================================
- * IOP  —  0x21  (R/W)
+ * IOP  -  0x21  (R/W)
  * Pin assignment for this peripheral (PSW, INT, CSN) and PA polling rate.
  * ======================================================================= */
 #define NPZ2100_REG_IOP                   (0x21u)
@@ -137,7 +137,7 @@ extern "C" {
 #define NPZ2100_PAMOD_DISABLED            (0x03u)
 
 /* =========================================================================
- * MODP  —  0x22  (R/W)
+ * MODP  -  0x22  (R/W)
  * SPI mode, data type, threshold logic, and I²C options.
  * ======================================================================= */
 #define NPZ2100_REG_MODP                  (0x22u)
@@ -187,7 +187,7 @@ extern "C" {
 #define NPZ2100_SPIMOD_3                  (0x03u)  /**< CPOL=1, CPHA=1. */
 
 /* =========================================================================
- * PERP  —  0x23–0x24  (R/W)
+ * PERP  -  0x23–0x24  (R/W)
  * 16-bit polling period in system clock periods.
  * WARNING: value 0 is invalid and causes undefined behaviour.
  * ======================================================================= */
@@ -195,42 +195,42 @@ extern "C" {
 #define NPZ2100_REG_PERP_H                (0x24u)
 
 /* =========================================================================
- * NCMDP  —  0x25  (R/W)
+ * NCMDP  -  0x25  (R/W)
  * Number of initialisation commands to send from SRAM.
  * I²C: number of (address, value) pairs.  SPI: number of bytes.
  * ======================================================================= */
 #define NPZ2100_REG_NCMDP                 (0x25u)
 
 /* =========================================================================
- * ADDRP  —  0x26  (R/W)
+ * ADDRP  -  0x26  (R/W)
  * I²C mode: 7-bit I²C address of the peripheral.
  * SPI mode: number of bytes to send from SRAM for the data read phase.
  * ======================================================================= */
 #define NPZ2100_REG_ADDRP                 (0x26u)
 
 /* =========================================================================
- * RREGP  —  0x27  (R/W)
+ * RREGP  -  0x27  (R/W)
  * I²C mode: register address of lower 8 bits of the value to read.
  * For 16-bit types, the next register (RREGP+1) gives the upper byte.
  * ======================================================================= */
 #define NPZ2100_REG_RREGP                 (0x27u)
 
 /* =========================================================================
- * THROVP  —  0x28–0x29  (R/W)
+ * THROVP  -  0x28–0x29  (R/W)
  * 16-bit over-threshold value.  Match DTYPE setting (MODP).
  * ======================================================================= */
 #define NPZ2100_REG_THROVP_L              (0x28u)
 #define NPZ2100_REG_THROVP_H              (0x29u)
 
 /* =========================================================================
- * THRUNP  —  0x2A–0x2B  (R/W)
+ * THRUNP  -  0x2A–0x2B  (R/W)
  * 16-bit under-threshold value.  Match DTYPE setting (MODP).
  * ======================================================================= */
 #define NPZ2100_REG_THRUNP_L              (0x2Au)
 #define NPZ2100_REG_THRUNP_H              (0x2Bu)
 
 /* =========================================================================
- * TWTP  —  0x2C  (R/W)
+ * TWTP  -  0x2C  (R/W)
  * Wait time before/after init.  Unit depends on TCFGP TWT_EXT / TINIT_EXT:
  *   EXT=0 → TWTP × 256 periods of internal 400 kHz clock
  *   EXT=1 → TWTP × 4096 periods of internal 400 kHz clock
@@ -238,7 +238,7 @@ extern "C" {
 #define NPZ2100_REG_TWTP                  (0x2Cu)
 
 /* =========================================================================
- * TCFGP  —  0x2D  (R/W)
+ * TCFGP  -  0x2D  (R/W)
  * Timing and communication protocol options for this peripheral.
  * ======================================================================= */
 #define NPZ2100_REG_TCFGP                 (0x2Du)
@@ -268,7 +268,7 @@ extern "C" {
 #define NPZ2100_TCFGP_I2CRET_POS          (4u)
 #define NPZ2100_TCFGP_I2CRET(v)           (uint8_t)(((v) & 0x01u) << NPZ2100_TCFGP_I2CRET_POS)
 
-/** [5] I2CRO: read-only mode — skip write of RREGP, issue read directly. */
+/** [5] I2CRO: read-only mode - skip write of RREGP, issue read directly. */
 #define NPZ2100_TCFGP_I2CRO_MSK           (0x20u)
 #define NPZ2100_TCFGP_I2CRO_POS           (5u)
 #define NPZ2100_TCFGP_I2CRO(v)            (uint8_t)(((v) & 0x01u) << NPZ2100_TCFGP_I2CRO_POS)
@@ -280,7 +280,7 @@ extern "C" {
 #define NPZ2100_TCFGP_SPIEN_GET(r)        (((r) & NPZ2100_TCFGP_SPIEN_MSK) >> NPZ2100_TCFGP_SPIEN_POS)
 
 /* =========================================================================
- * VALP  —  0x2E–0x2F  (R)
+ * VALP  -  0x2E–0x2F  (R)
  * Last read value from peripheral (8 or 16-bit, per DTYPE).
  * ======================================================================= */
 #define NPZ2100_REG_VALP_L                (0x2Eu)

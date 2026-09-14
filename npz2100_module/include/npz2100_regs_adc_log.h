@@ -1,6 +1,6 @@
 /**
  * @file npz2100_regs_adc_log.h
- * @brief Register addresses and bitfield macros — ADC, Logging, Event Counter,
+ * @brief Register addresses and bitfield macros - ADC, Logging, Event Counter,
  *        and SRAM Bank blocks.
  *
  * Covers:
@@ -11,8 +11,8 @@
  *  - SRAM_BANK (0x7F)
  *  - SRAM window (0x80–0xFF)
  *
- * @version 0.7
- * @date    2026-05-06
+ * @version 0.8
+ * @date    2026-09-11
  */
 
 #ifndef NPZ2100_REGS_ADC_LOG_H
@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 /* =========================================================================
- * ADCCFG  —  0x40  (R/W)
+ * ADCCFG  -  0x40  (R/W)
  * Enable ADC channels, select sampling clock, and sync with peripherals.
  * ======================================================================= */
 #define NPZ2100_REG_ADCCFG                (0x40u)
@@ -47,7 +47,7 @@ extern "C" {
 
 /**
  * @defgroup adccfg_clk ADC sampling clock selection
- * [5:4] ADC_CLK_SEL — see datasheet Table 59.
+ * [5:4] ADC_CLK_SEL - see datasheet Table 59.
  * NOTE: Values other than 0b00 automatically turn on the XO.
  * @{
  */
@@ -73,9 +73,9 @@ extern "C" {
 #define NPZ2100_ADCCFG_ADC2_PSYNC(v)      (uint8_t)(((v) & 0x01u) << NPZ2100_ADCCFG_ADC2_PSYNC_POS)
 
 /* =========================================================================
- * THROVA[1-3]  — Over-threshold for ADC channels 1–3  (R/W, 8-bit unsigned)
- * THRUNA[1-3]  — Under-threshold for ADC channels 1–3 (R/W, 8-bit unsigned)
- * VAL_ADC[1-3] — Last ADC sample value               (R,   8-bit unsigned)
+ * THROVA[1-3]  - Over-threshold for ADC channels 1–3  (R/W, 8-bit unsigned)
+ * THRUNA[1-3]  - Under-threshold for ADC channels 1–3 (R/W, 8-bit unsigned)
+ * VAL_ADC[1-3] - Last ADC sample value               (R,   8-bit unsigned)
  * ======================================================================= */
 #define NPZ2100_REG_THROVA1               (0x41u)
 #define NPZ2100_REG_THRUNA1               (0x42u)
@@ -87,13 +87,13 @@ extern "C" {
 #define NPZ2100_REG_VAL_ADC2              (0x48u)
 #define NPZ2100_REG_VAL_ADC3              (0x49u)
 
-/** Helper macros — index n = 1, 2, or 3. */
+/** Helper macros - index n = 1, 2, or 3. */
 #define NPZ2100_REG_THROVAn(n)            (uint8_t)(NPZ2100_REG_THROVA1 + (((n) - 1u) * 2u))
 #define NPZ2100_REG_THRUNAn(n)            (uint8_t)(NPZ2100_REG_THRUNA1 + (((n) - 1u) * 2u))
 #define NPZ2100_REG_VAL_ADCn(n)           (uint8_t)(NPZ2100_REG_VAL_ADC1 + ((n) - 1u))
 
 /* =========================================================================
- * LOGCFG  —  0x50  (R/W)
+ * LOGCFG  -  0x50  (R/W)
  * Logging enable and rotation control.
  * ======================================================================= */
 #define NPZ2100_REG_LOGCFG                (0x50u)
@@ -113,19 +113,19 @@ extern "C" {
 #define NPZ2100_LOGCFG_LOG_IS_ROT_GET(r)  (((r) & NPZ2100_LOGCFG_LOG_IS_ROT_MSK) >> 7u)
 
 /* =========================================================================
- * LOGSADDR  —  0x51  (R/W)
+ * LOGSADDR  -  0x51  (R/W)
  * Start address of the logging area in SRAM (0x00–0xFF).
  * ======================================================================= */
 #define NPZ2100_REG_LOGSADDR              (0x51u)
 
 /* =========================================================================
- * LOGCADDR  —  0x52  (R)
+ * LOGCADDR  -  0x52  (R)
  * Address of the last written log entry in SRAM (0x00–0xFF).
  * ======================================================================= */
 #define NPZ2100_REG_LOGCADDR              (0x52u)
 
 /* =========================================================================
- * CNTVAL  —  0x53–0x56  (R/W)
+ * CNTVAL  -  0x53–0x56  (R/W)
  * 32-bit event counter value.
  * ======================================================================= */
 #define NPZ2100_REG_CNT_VAL_0             (0x53u)  /**< LSB */
@@ -134,7 +134,7 @@ extern "C" {
 #define NPZ2100_REG_CNT_VAL_3             (0x56u)  /**< MSB */
 
 /* =========================================================================
- * CNTCFG  —  0x57  (R/W)
+ * CNTCFG  -  0x57  (R/W)
  * Event counter enable and source selection.
  * Writing CNT_EN resets the counter value.
  * ======================================================================= */
@@ -162,8 +162,8 @@ extern "C" {
 #define NPZ2100_CNT_SRC_SW_LP4            (0x07u)
 
 /* =========================================================================
- * CNTTRIG  —  0x58–0x5B  (R/W)
- * 32-bit event counter trigger value — fires when CNTVAL == CNTTRIG.
+ * CNTTRIG  -  0x58–0x5B  (R/W)
+ * 32-bit event counter trigger value - fires when CNTVAL == CNTTRIG.
  * ======================================================================= */
 #define NPZ2100_REG_CNT_TRIG_0            (0x58u)  /**< LSB */
 #define NPZ2100_REG_CNT_TRIG_1            (0x59u)
@@ -171,7 +171,7 @@ extern "C" {
 #define NPZ2100_REG_CNT_TRIG_3            (0x5Bu)  /**< MSB */
 
 /* =========================================================================
- * SRAM_BANK  —  0x7F  (R/W)
+ * SRAM_BANK  -  0x7F  (R/W)
  * Controls which 128-byte half of SRAM is visible through the I²C window
  * at addresses 0x80–0xFF.
  *   SRAM_BANK=0 → I²C 0x80–0xFF maps to SRAM 0x00–0x7F
